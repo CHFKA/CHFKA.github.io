@@ -9,12 +9,12 @@ description: ''
 keywords:
 author: CHFKA
 language: zh-CN
-timezone: Asia/ZheJiang
+timezone: Asia/Shanghai
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: https://CHFKA.github.io.git
-root: /
+url: https://CHFKA.github.io
+root: /CHFKA.github.io/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -106,3 +106,10 @@ deploy:
   type: git
   repo: https://github.com/CHFKA/CHFKA.github.io.git
   branch: master
+  
+#search
+search:
+path: search.xml
+field: post
+format: html
+limit: 10000
