@@ -1,5 +1,5 @@
 ---
-title: 计算机网络概论
+title: 计算机网络(1)-计算机网络和Internet
 date: 2021-11-29 20:51:24
 tags: 计算机网络
 ---
@@ -291,17 +291,18 @@ tags: 计算机网络
      - 传播时延 = d/s
   5. 节点延时：
 
-     - $$
-        d_{nodal}  = d_{proc} + d_{queue} + d_{trans} + d_{prop}\\
-        \begin{aligned}
+     - 节点延时计算:
+      $d_{nodal}  = d_{proc} + d_{queue} + d_{trans} + d_{prop}$
+      $$
+        \begin{align}
         &d_{proc} = 处理延时  \qquad  通常是微秒数量级或更少
         \\
         &d_{queue} = 排队延时  \qquad 取决于拥塞程度
         \\
-        &d_{trans} = 传输延时  \qquad =L/R，对低速率的链路而言很大(如拨号)，通常为微秒级到毫秒级
+        &d_{trans} = 传输延时=L/R，对低速率的链路而言很大(如拨号)，通常为微秒级到毫秒级
         \\
         &d_{prop} = 传播时延 \qquad 几微秒到几百毫秒\\
-        \end{aligned}
+        \end{align}
       $$
 - 分组丢失：
 
