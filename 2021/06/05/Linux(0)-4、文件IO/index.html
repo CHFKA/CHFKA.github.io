@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"chfka.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="介绍 ​">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程控制">
+<meta property="og:url" content="https://chfka.github.io/2021/06/05/Linux(0)-4%E3%80%81%E6%96%87%E4%BB%B6IO/index.html">
+<meta property="og:site_name" content="CHFKA">
+<meta property="og:description" content="介绍 ​">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-12-18T17:19:38.439Z">
+<meta property="article:author" content="CHFKA">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://chfka.github.io/2021/06/05/Linux(0)-4%E3%80%81%E6%96%87%E4%BB%B6IO/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://chfka.github.io/2021/06/05/Linux(0)-4%E3%80%81%E6%96%87%E4%BB%B6IO/","path":"2021/06/05/Linux(0)-4、文件IO/","title":"进程控制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>进程控制 | CHFKA</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">CHFKA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客网站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text"> 介绍 </span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%20io"><span class="nav-number">2.</span> <span class="nav-text"> 文件 IO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#open"><span class="nav-number">2.1.</span> <span class="nav-text">open</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#close"><span class="nav-number">2.2.</span> <span class="nav-text">close</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#write%20%E5%86%99"><span class="nav-number">2.3.</span> <span class="nav-text">Write 写 </span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lseek---%20%E7%A7%BB%E5%8A%A8%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text">lseek - 移动文件读写位置 </span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">2.4.1.</span> <span class="nav-text"> 使用 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">2.4.2.</span> <span class="nav-text"> 作用 </span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">2.5.</span> <span class="nav-text"> 阻塞的概念 </span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">CHFKA</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://chfka.github.io/2021/06/05/Linux(0)-4%E3%80%81%E6%96%87%E4%BB%B6IO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CHFKA">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHFKA">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          进程控制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-05 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-05T00:00:00+08:00">2021-06-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2021-12-19 01:19:38" itemprop="dateModified" datetime="2021-12-19T01:19:38+08:00">2021-12-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="介绍"> 介绍 </h1>
+<p>​</p>
+<span id="more"></span>
+<h1 id="文件 io"> 文件 IO</h1>
+<h2 id="open">open</h2>
+<ul>
+<li><p> 查看 man 2 open</p>
+<ul>
+<li><p>pathname： 文件名 </p></li>
+<li><p>flags</p>
+<ul>
+<li><p>O_RDONLY 只读 </p></li>
+<li><p>O_WDONLY 只写 </p></li>
+<li><p>O_RDWR 读写 </p></li>
+<li><p> 可选项 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O_RDWR|O_APPEND</span><br></pre></td></tr></table></figure>
+<ul>
+<li>O_APPEND 追加 </li>
+<li>O_CREAT 创建文件
+<ul>
+<li>O_EXCL 与 O_CREAT 一起使用，如果文件存在，则报错 </li>
+<li>mode 权限位，最终（mode&amp;~umask）</li>
+</ul></li>
+<li>O_NONBLOCK 非阻塞 </li>
+</ul></li>
+</ul></li>
+<li><p> 返回值 ： 返回最小的可用文件描述符 失败返回 -1，设置 errno</p></li>
+</ul></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(<span class="keyword">const</span> cahr* pathname, <span class="keyword">int</span> flags)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(<span class="keyword">const</span> cahr* pathname, <span class="keyword">int</span> flags,<span class="keyword">mode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+<h2 id="close">close</h2>
+<ul>
+<li><p>```c int close() <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- fd open 打开的文件描述符 </span><br><span class="line"></span><br><span class="line">- 返回值：成功返回 0 失败返回 -1，设置 errno</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## read 读 </span><br><span class="line"></span><br><span class="line">- &#96;&#96;&#96;c</span><br><span class="line">  ssize_t read(int fd, void* buf,size_t count);</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>fd 文件描述符‘</li>
+<li>buf 缓冲区 </li>
+<li>count 缓冲区大小 </li>
+<li> 返回值
+<ul>
+<li> 失败返回 -1，设置 errno</li>
+<li> 成功返回读取到的大小 </li>
+<li>0 代表读到文件末尾 </li>
+<li> 非阻塞的情况下 read 返回 -1，但此时需要判断 errno 的值 </li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="write 写">Write 写 </h2>
+<ul>
+<li>```c ssize_t read(int fd, void* buf,size_t count); <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  - fd 文件描述符‘</span><br><span class="line">  - buf 缓冲区 </span><br><span class="line">  - count 缓冲区大小 </span><br><span class="line">  - 返回值 </span><br><span class="line">    - 失败返回 -1，设置 errno</span><br><span class="line">    - 成功返回写入的字节数 </span><br><span class="line">    - 0，代表未写入 </span><br><span class="line"></span><br><span class="line">- 实现一个 cat 功能：读文件，输出到标准输出 </span><br><span class="line"></span><br><span class="line">  &#96;&#96;&#96;c</span><br><span class="line">  #include&lt;stdio.h&gt;</span><br><span class="line">  #include&lt;unistd.h&gt;</span><br><span class="line">  #include&lt;sys&#x2F;stat.h&gt;</span><br><span class="line">  #include&lt;sys&#x2F;types.h&gt;</span><br><span class="line">  #include&lt;fcntl.h&gt;</span><br><span class="line">  </span><br><span class="line">  int main(int argc, char *argv[])</span><br><span class="line">  &#123;</span><br><span class="line">      if(argc !&#x3D; 2)</span><br><span class="line">      &#123;</span><br><span class="line">          return -1;</span><br><span class="line">      &#125;</span><br><span class="line">          </span><br><span class="line">      int fd &#x3D; open(argc[1],O_RDONLY);</span><br><span class="line">      char buf[256];</span><br><span class="line">      while(ret)</span><br><span class="line">      &#123;</span><br><span class="line">          int ret &#x3D; read(fd, buf ,sizeof(buf));</span><br><span class="line">      </span><br><span class="line">     		write(STDOUT_FILENO, buf , ret);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      </span><br><span class="line">      close(fd);</span><br><span class="line">      </span><br><span class="line">      return 0;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="lseek--- 移动文件读写位置">lseek - 移动文件读写位置 </h2>
+<h3 id="使用"> 使用 </h3>
+<ul>
+<li><p>off_t lseek(int fd, off_t offset,intg whence);</p>
+<ul>
+<li><p>fd 文件描述符 </p></li>
+<li><p>offset 偏移量 </p></li>
+<li><p>whence</p>
+<ul>
+<li>SEEK_SET 文件开始位置 </li>
+<li>SEEK_CUR 当前位置 </li>
+<li>SEEK_END 结尾 </li>
+</ul></li>
+<li><p> 返回值 </p>
+<ul>
+<li> 成功 返回当前位置到开始的长度 </li>
+<li> 失败 返回 -1. 设置 errno</li>
+</ul></li>
+</ul></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(argc != <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">	<span class="keyword">int</span> fd = open(argc[<span class="number">1</span>],O_RDONLY);</span><br><span class="line">    write(fd,<span class="string">&quot;helloworld&quot;</span>,<span class="number">11</span>);</span><br><span class="line">    <span class="comment">// 文件读写位置此时到末尾 </span></span><br><span class="line">    <span class="comment">// 需要移动读写位置 </span></span><br><span class="line">    lseek(fd, <span class="number">0</span> , SEEK_SET);</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">256</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> ret = read(fd,buf,<span class="keyword">sizeof</span>(buf));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(ret)&#123;</span><br><span class="line">        write(STDOUT_FILENO,buf,ret);<span class="comment">//STDIN_FILENO.STDERR_FILENO</span></span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="作用"> 作用 </h3>
+<ul>
+<li><p> 移动文件读写位置 </p></li>
+<li><p> 计算文件大小 </p>
+<ul>
+<li><p>```c #include&lt;stdio.h&gt; #include&lt;unistd.h&gt; #include&lt;sys/stat.h&gt; #include&lt;sys/types.h&gt; #include&lt;fcntl.h&gt; int main(int argc, char *argv[]) {if(argc != 2) {return -1;} int fd = open(argc[1],O_RDONLY);</p>
+<pre><code>int ret = lseek(fd,0,SEEK_END);
+
+close(fd);
+
+return 0;</code></pre>
+<p>} <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 拓展文件 </span><br><span class="line"></span><br><span class="line">  - &#96;&#96;&#96;c</span><br><span class="line">    #include&lt;stdio.h&gt;</span><br><span class="line">    #include&lt;unistd.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;stat.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;types.h&gt;</span><br><span class="line">    #include&lt;fcntl.h&gt;</span><br><span class="line">    int main(int argc, char *argv[])</span><br><span class="line">    &#123;</span><br><span class="line">        if(argc !&#x3D; 2)</span><br><span class="line">        &#123;</span><br><span class="line">            return -1;</span><br><span class="line">        &#125;</span><br><span class="line">        int fd &#x3D; open(argc[1],O_WDONLY|O_CREAT，0666);</span><br><span class="line">        </span><br><span class="line">        int ret &#x3D; lseek(fd,1024,SEEK_END);</span><br><span class="line">        &#x2F;&#x2F; 至少写一次才能保存拓展文件 </span><br><span class="line">        write(fd,&quot;a&quot;,1);</span><br><span class="line">        </span><br><span class="line">        close(fd);</span><br><span class="line">        </span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p></li>
+</ul></li>
+</ul>
+<h2 id="阻塞的概念"> 阻塞的概念 </h2>
+<ul>
+<li><p>read 函数在读设备或者读管道，或者网络的时候发生阻塞现象 </p>
+<ul>
+<li><p>/dev/ttey 为输入输出设备对应文件 </p></li>
+<li><p>```c #include&lt;stdio.h&gt; #include&lt;unistd.h&gt; #include&lt;sys/stat.h&gt; #include&lt;sys/types.h&gt; #include&lt;fcntl.h&gt; int main(int argc, char *argv[]) {int fd = open("/dev/ttey",O_RDWR); char buf[256]; int ret = 0; while(1) {ret = read(fd, buf , sizeof(buf)); } return 0; } <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    ​	可以在 open 的参数中加入可选项 O_NONBLOCK ，使得程序在读写时不阻塞。</span><br><span class="line"></span><br><span class="line">- fcntl 函数 </span><br><span class="line"></span><br><span class="line">  - 设置非阻塞 </span><br><span class="line"></span><br><span class="line">  - &#96;&#96;&#96;c</span><br><span class="line">    #include&lt;stdio.h&gt;</span><br><span class="line">    #include&lt;unistd.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;stat.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;types.h&gt;</span><br><span class="line">    #include&lt;fcntl.h&gt;</span><br><span class="line">    int main(int argc, char *argv[])</span><br><span class="line">    &#123;</span><br><span class="line">        int fd &#x3D; open(&quot;&#x2F;dev&#x2F;ttey&quot;,O_RDWR);</span><br><span class="line">        </span><br><span class="line">        int flags &#x3D; fcntl(fd,F_GETFL);</span><br><span class="line">        flags |&#x3D; O_NONBLOCK;</span><br><span class="line">        fcntl(fd,F_GETFL,flags);</span><br><span class="line">        </span><br><span class="line">        char buf[256];</span><br><span class="line">        int ret &#x3D; 0;</span><br><span class="line">        while(1)</span><br><span class="line">        &#123;</span><br><span class="line">            ret &#x3D; read(fd, buf , sizeof(buf));</span><br><span class="line">        &#125;</span><br><span class="line">    	return 0;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p></li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/04/Linux(0)-1%E3%80%81%E5%BA%93%E7%9A%84%E5%88%B6%E4%BD%9C%E4%B8%8E%E4%BD%BF%E7%94%A8/" rel="prev" title="库的制作与使用">
+                  <i class="fa fa-chevron-left"></i> 库的制作与使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/05/Linux(0)-3%E3%80%81%E7%BC%96%E5%86%99makefile/" rel="next" title="编写 makefile">
+                  编写 makefile <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHFKA</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

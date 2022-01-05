@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"chfka.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="介绍 ​">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线程">
+<meta property="og:url" content="https://chfka.github.io/2021/06/12/Linux(5)-1%E3%80%81%E7%BA%BF%E7%A8%8B/index.html">
+<meta property="og:site_name" content="CHFKA">
+<meta property="og:description" content="介绍 ​">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-12-18T17:19:38.455Z">
+<meta property="article:author" content="CHFKA">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://chfka.github.io/2021/06/12/Linux(5)-1%E3%80%81%E7%BA%BF%E7%A8%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://chfka.github.io/2021/06/12/Linux(5)-1%E3%80%81%E7%BA%BF%E7%A8%8B/","path":"2021/06/12/Linux(5)-1、线程/","title":"线程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>线程 | CHFKA</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">CHFKA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客网站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">线程相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%80%80%E5%87%BA"><span class="nav-number">2.2.</span> <span class="nav-text">线程退出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%80%E6%AD%BB%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.3.</span> <span class="nav-text">杀死线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%88%86%E7%A6%BB"><span class="nav-number">2.4.</span> <span class="nav-text">线程分离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE%E5%88%86%E7%A6%BB"><span class="nav-number">2.5.</span> <span class="nav-text">线程属性设置分离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%20--%20%E9%9C%80%E8%A6%81%E5%8A%A0%E9%94%81"><span class="nav-number">2.6.</span> <span class="nav-text">线程同步 -- 需要加锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E9%87%8F%20----mutex-%20%E5%BB%BA%E8%AE%AE%E9%94%81"><span class="nav-number">2.7.</span> <span class="nav-text">互斥量 -- mutex、 建议锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F%20---pthread_cond"><span class="nav-number">2.8.</span> <span class="nav-text">条件变量 ---pthread_cond</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%20--sem-%20%E5%8A%A0%E5%BC%BA%E7%89%88%E4%BA%92%E6%96%A5%E9%87%8F"><span class="nav-number">2.9.</span> <span class="nav-text">信号量 --sem 加强版互斥量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E9%94%81"><span class="nav-number">2.10.</span> <span class="nav-text">文件锁</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">CHFKA</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://chfka.github.io/2021/06/12/Linux(5)-1%E3%80%81%E7%BA%BF%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CHFKA">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHFKA">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          线程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-12 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-12T00:00:00+08:00">2021-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2021-12-19 01:19:38" itemprop="dateModified" datetime="2021-12-19T01:19:38+08:00">2021-12-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="介绍">介绍</h1>
+<p>​</p>
+<span id="more"></span>
+<h1 id="线程">线程</h1>
+<h2 id="线程相关概念">线程相关概念</h2>
+<ul>
+<li><p>线程 man page 安装</p>
+<ul>
+<li><p>```c sudo apt-get installmanpages-posix-dev <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 概念：</span><br><span class="line">  </span><br><span class="line">  - 轻量级的进程，一个进程内部可以有多个线程，默认情况下一个进程只有一个线程 </span><br><span class="line">  </span><br><span class="line">  - 线程时最小的执行单位，进程时最小的系统资源分配单位</span><br><span class="line">  </span><br><span class="line">  - 内核实现都是通过 clone 函数实现的</span><br><span class="line">  </span><br><span class="line">  - 线程也有自己的 PCB</span><br><span class="line">  </span><br><span class="line">  - 使用 ps -Lf pid  查看指定线程的 lwp 号</span><br><span class="line">  </span><br><span class="line">  - malloc 和 mmap 申请的内存可以被其他线程释放</span><br><span class="line">  </span><br><span class="line">  - 可以创建(cpu 核数 *2 + 2) 个线程</span><br><span class="line"></span><br><span class="line">## 线程共享资源</span><br><span class="line"></span><br><span class="line">- 文件描述符表</span><br><span class="line"></span><br><span class="line">- 每种信号的处理方式</span><br><span class="line"></span><br><span class="line">- 当前工作目录</span><br><span class="line"></span><br><span class="line">- 用户 ID 和组</span><br><span class="line"></span><br><span class="line">- 内存地址空间(.text&#x2F;.data&#x2F;.bss&#x2F;heap&#x2F; 共享库)</span><br><span class="line"></span><br><span class="line">## 线程非共享资源</span><br><span class="line"></span><br><span class="line">- 线程 id</span><br><span class="line"></span><br><span class="line">- 处理器线场和栈指针(内核栈)</span><br><span class="line"></span><br><span class="line">- 独立的栈空间(用户空间栈)</span><br><span class="line"></span><br><span class="line">- errno 变量</span><br><span class="line"></span><br><span class="line">- 信号屏蔽字</span><br><span class="line"></span><br><span class="line">- 调度优先级</span><br><span class="line"></span><br><span class="line">## 线程优缺点 -- 优点突出</span><br><span class="line"></span><br><span class="line">- 优点：</span><br><span class="line">  </span><br><span class="line">  - 提高程序并发性</span><br><span class="line">  </span><br><span class="line">  - 开销小</span><br><span class="line">  </span><br><span class="line">  - 数据通信、共享数据方便(包括全局变量)</span><br><span class="line"></span><br><span class="line">- 缺点</span><br><span class="line">  </span><br><span class="line">  - 库函数，不稳定</span><br><span class="line">  </span><br><span class="line">  - 调试、编写困难</span><br><span class="line">  </span><br><span class="line">  - 对信号支持不好</span><br><span class="line"></span><br><span class="line">## 创建一个线程</span><br><span class="line"></span><br><span class="line">- 创建函数</span><br><span class="line">  </span><br><span class="line">  &#96;&#96;&#96;c</span><br><span class="line">  int pthread_create(pthread_t *thread,const pthread_attr_t *attr,void *(*start_routine)(void *),void *arg);</span><br></pre></td></tr></table></figure></p></li>
+<li><p>thread 线程 id，传出参数</p></li>
+<li><p>attr 代表线程的属性</p></li>
+<li><p>函数指针</p></li>
+<li><p>arg 线程执行函数的参数</p></li>
+<li><p>需要链接 -pthread 库</p></li>
+</ul></li>
+<li><p>例子</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;uinstd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">thr</span><span class="params">(<span class="keyword">void</span> *arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = (<span class="keyword">int</span>)arg;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num  %d&quot;</span>,num);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;I am a thread %d\n&quot;</span>,pthread_self());</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">    pthread_creat(&amp;tid,<span class="literal">NULL</span>,thr,(<span class="keyword">void</span> *)i);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;I am a main thread %d\n&quot;</span>,pthread_self());</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="线程退出">线程退出</h2>
+<ul>
+<li><p>```c pthread_exit(NULL); <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 注意：</span><br><span class="line">  </span><br><span class="line">  - 在线程可以使用 pthread_exit(NULL);</span><br><span class="line">  </span><br><span class="line">  - 在线程中使用 return</span><br><span class="line">  </span><br><span class="line">  - exit 代表退出整个进程</span><br><span class="line"></span><br><span class="line">## 线程回收 -- 阻塞等待回收</span><br><span class="line"></span><br><span class="line">- 函数</span><br><span class="line">  </span><br><span class="line">  &#96;&#96;&#96;c</span><br><span class="line">  int pthread_join(pthread_t thread,void **retval);</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>thread 创建的时候传出的第一个参数</p></li>
+<li><p>retval 线程的退出信息</p></li>
+</ul></li>
+</ul>
+<h2 id="杀死线程">杀死线程</h2>
+<ul>
+<li><p>函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cancel</span><span class="params">(<span class="keyword">pthread_t</span> thread)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>被该函数杀死后线程退出信息为 -1</p></li>
+<li><p>强行设置取消点</p></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_testcancel</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="线程分离">线程分离</h2>
+<ul>
+<li><p>线程若有该机制，将不会产生僵尸进程</p></li>
+<li><p>线程分离状态：指定该状态，线程主动与主控线程断开关系。线程结束后，其退出状态不由其他线程获取，而直接自己自动释放, 不需要用 pthread_join 函数</p></li>
+<li><p>函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_detach</span><span class="params">(<span class="keyword">pthread_t</span> thread)</span></span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="线程属性设置分离">线程属性设置分离</h2>
+<ul>
+<li><p>初始化线程属性</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_attr_init</span><span class="params">(<span class="keyword">pthread_attr_t</span> *attr)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>销毁线程属性</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_attr_destroy</span><span class="params">(<span class="keyword">pthread_attr_t</span> *attr)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>设置属性分离</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_attr_setdetachstate</span><span class="params">(<span class="keyword">pthread_attr_t</span> *attr,<span class="keyword">int</span> detachstate)</span></span>;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>attr init 初始化的属性</p></li>
+<li><p>detachstate</p>
+<ul>
+<li><p>PTHREAD_CREATE_DETACHED 线程分离</p></li>
+<li><p>PTHREAD_CREATE_JOINABLE 允许回收</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="线程同步 -- 需要加锁">线程同步 -- 需要加锁</h2>
+<ul>
+<li><p>协调步骤，顺序执行</p></li>
+<li><p>数据混乱原因</p>
+<ul>
+<li><p>资源共享</p></li>
+<li><p>调度随机</p></li>
+<li><p>线程间缺少必要的同步机制</p></li>
+</ul></li>
+</ul>
+<h2 id="互斥量 ----mutex- 建议锁">互斥量 -- mutex、 建议锁</h2>
+<ul>
+<li><p>初始化</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_init</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *<span class="keyword">restrict</span> mutex,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">pthread_mutexattr_t</span> *<span class="keyword">restrict</span> attr)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>restrict 约束该块内存区域对应的数据，只能通过后面的变量进行访问和修改</p></li>
+<li><p>mutex 互斥量 -- 锁</p></li>
+<li><p>attr 互斥量的属性，可以不考虑，传 NULL</p></li>
+<li><p>常量初始化，此时可以使用 init</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pthread_mutex_t</span> mutex = PTHREAD_MUTEX_INITALIZER;</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><p>销毁</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_destroy</span><span class="params">(pthread_mutex *mutex)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>mutex init 初始化的锁</li>
+</ul></li>
+<li><p>加锁</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_lock</span><span class="params">(pthread_mutex *mutex)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>mutex init 初始化的锁</p></li>
+<li><p>如果当前未锁，成功，加锁</p></li>
+<li><p>如果已经加锁，阻塞等待</p></li>
+</ul></li>
+<li><p>解锁</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_unlock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用</p>
+<ul>
+<li><p>初始化</p></li>
+<li><p>加锁</p></li>
+<li><p>执行逻辑 -- 操作共享数据</p></li>
+<li><p>解锁</p></li>
+<li><p>注意：加锁需要最小粒度，不要一直占用临界区</p></li>
+</ul></li>
+<li><p>尝试加锁</p>
+<ul>
+<li>```c int pthread_mutex_trylock(pthread_mutex *mutex); <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 死锁</span><br><span class="line"></span><br><span class="line">- 原因</span><br><span class="line">  </span><br><span class="line">  - 加锁 2 次</span><br><span class="line">  </span><br><span class="line">  - 交叉锁</span><br><span class="line"></span><br><span class="line">- 解决办法</span><br><span class="line">  </span><br><span class="line">  - 每个线程申请锁的顺序要固定</span><br><span class="line">  </span><br><span class="line">  - 如果申请到一把锁，申请另一把的时候，申请失败，应该释放已经掌握的</span><br><span class="line"></span><br><span class="line">## 读写锁</span><br><span class="line"></span><br><span class="line">- 特点：读共享，写独占，写优先级高</span><br><span class="line"></span><br><span class="line">- 状态</span><br><span class="line">  </span><br><span class="line">  - 未加锁</span><br><span class="line">  </span><br><span class="line">  - 读锁</span><br><span class="line">  </span><br><span class="line">  - 写锁</span><br><span class="line"></span><br><span class="line">- 使用场景：适合读的线程多</span><br><span class="line"></span><br><span class="line">- 初始化</span><br><span class="line">  </span><br><span class="line">  &#96;&#96;&#96;c</span><br><span class="line">  int pthread_rwlock_init(pthread_rwlock_t *restrict rwlock,</span><br><span class="line">          const pthread_rwlockattr_t *restrict attr);</span><br><span class="line">  &#x2F;&#x2F; 或</span><br><span class="line">  pthread_rwlock_t rwlock &#x3D; PTHREAD_RWLOCK_INITALIZER;</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><p>销毁</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_rwlock_destroy</span><span class="params">(<span class="keyword">pthread_rwlock_t</span> * rwlock)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>加读锁</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_rwlock_rdlock</span><span class="params">(<span class="keyword">pthread_rwlock_t</span> * rwlock)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>加写锁</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_rwlock_wrlock</span><span class="params">(<span class="keyword">pthread_rwlock_t</span> * rwlock)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>释放锁</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_rwlock_unlock</span><span class="params">(<span class="keyword">pthread_rwlock_t</span> * rwlock)</span></span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="条件变量 ---pthread_cond">条件变量 ---pthread_cond</h2>
+<p>    不是锁，可以引起阻塞，要和互斥量组合使用</p>
+<ul>
+<li><p>超时等待</p>
+<ul>
+<li>ty_sec 绝对时间，填写时 time(NULL) + 600 ===&gt; 设置超时 600s</li>
+</ul></li>
+<li><p>条件变量阻塞等待</p>
+<ul>
+<li><p>先释放锁 mutex</p></li>
+<li><p>阻塞在 cond 条件变量上</p></li>
+</ul></li>
+<li><p>例子</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pthread_mutex_t</span> mutex = PTHREAD_MUTEX_INITALIZER;</span><br><span class="line"><span class="keyword">pthread_cond_t</span> cond = PTHREAD_COND_INITIALIZER;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> beginnum = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">ProdInfo</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> num;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">ProdInfo</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125;</span><br><span class="line">ProdInfo *Head = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thr_producter</span><span class="params">(<span class="keyword">void</span> *arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 负责在链表添加数据</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ProdInfo *prod = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ProdInfo));</span><br><span class="line">        prod-&gt;num = beginnum++;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;----%s------self=%lu-----%d\n&quot;</span>,_FUNCTION_,pthread_self(),prod-&gt;num);</span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        prod-&gt;next = Head;</span><br><span class="line">        Head = prod;</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">        <span class="comment">// 发起通知</span></span><br><span class="line">        pthread_cond_signal(&amp;cond);</span><br><span class="line">        sleep(rand()%<span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thr_customer</span><span class="params">(<span class="keyword">void</span> *arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ProdInfo *prod = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        <span class="comment">// 取链表的数据</span></span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        <span class="keyword">while</span>(Head == <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            pthread_cond_wait(&amp;cond,&amp;mutex);<span class="comment">// 在此之前必须先加锁</span></span><br><span class="line">        &#125;</span><br><span class="line">        prod = Head;</span><br><span class="line">        Head = Head-&gt;next;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;----%s------self=%lu-----%d\n&quot;</span>,_FUNCTION_,pthread_self(),prod-&gt;num);</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">        sleep(round%<span class="number">4</span>);</span><br><span class="line">        <span class="built_in">free</span>(prod);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid[<span class="number">2</span>];</span><br><span class="line">    pthread_create(&amp;tid[<span class="number">0</span>],<span class="literal">NULL</span>,thr_producter,<span class="literal">NULL</span>);</span><br><span class="line">    pthread_create(&amp;tid[<span class="number">1</span>],<span class="literal">NULL</span>,thr_customer,<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    pthread_join(tid[<span class="number">0</span>],<span class="literal">NULL</span>);</span><br><span class="line">    pthread_join(tid[<span class="number">1</span>],<span class="literal">NULL</span>);</span><br><span class="line">    pthread_mutex_destroy(&amp;mutex);</span><br><span class="line">    pthread_cond_destroy(&amp;cond);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="信号量 --sem- 加强版互斥量">信号量 --sem 加强版互斥量</h2>
+<p>        信号的量的初值，决定了占用信号量的线程的个数.</p>
+<ul>
+<li><p>允许多个线程访问共享资源</p></li>
+<li><p>初始化</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sem_init</span><span class="params">(<span class="keyword">sem_t</span> *sem,<span class="keyword">int</span> pshared,<span class="keyword">unsigned</span> <span class="keyword">int</span> value)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>sem 定义的信号量，传出</p></li>
+<li><p>pshared</p>
+<ul>
+<li><p>0 代表线程信号量</p></li>
+<li><p>非 0 代表进程信号量</p></li>
+</ul></li>
+<li><p>value 定义信号量的个数</p></li>
+</ul></li>
+<li><p>销毁</p></li>
+<li><p>申请信号量 ，申请成功 value--</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sem_wait</span><span class="params">(<span class="keyword">sem_t</span> *sem)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>当信号量为 0 时，阻塞</li>
+</ul></li>
+<li><p>释放信号量 value++</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sem_post</span><span class="params">(<span class="keyword">sem_t</span> *sem)</span></span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="文件锁">文件锁</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">flock</span> <span class="title">lk</span>;</span></span><br><span class="line">lk.l_type = F_WRLCK;</span><br><span class="line">lk._whence = SEEK_SET;</span><br><span class="line">lk.start = <span class="number">0</span>;</span><br><span class="line">lk.l_len = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span>(fcntl(fd,F_SETLK,&amp;lk) &lt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    perror(<span class="string">&quot;get lock err&quot;</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/09/Linux(3)-1%E3%80%81%E4%BF%A1%E5%8F%B7/" rel="prev" title="信号">
+                  <i class="fa fa-chevron-left"></i> 信号
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/12/Linux(4)-1%E3%80%81%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" rel="next" title="守护进程">
+                  守护进程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHFKA</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

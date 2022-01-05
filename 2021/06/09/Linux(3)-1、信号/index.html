@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"chfka.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="介绍 ​">
+<meta property="og:type" content="article">
+<meta property="og:title" content="信号">
+<meta property="og:url" content="https://chfka.github.io/2021/06/09/Linux(3)-1%E3%80%81%E4%BF%A1%E5%8F%B7/index.html">
+<meta property="og:site_name" content="CHFKA">
+<meta property="og:description" content="介绍 ​">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-09T15:37:06.000Z">
+<meta property="article:modified_time" content="2021-12-18T17:19:38.455Z">
+<meta property="article:author" content="CHFKA">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://chfka.github.io/2021/06/09/Linux(3)-1%E3%80%81%E4%BF%A1%E5%8F%B7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://chfka.github.io/2021/06/09/Linux(3)-1%E3%80%81%E4%BF%A1%E5%8F%B7/","path":"2021/06/09/Linux(3)-1、信号/","title":"信号"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>信号 | CHFKA</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">CHFKA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客网站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text"> 介绍 </span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7"><span class="nav-number">2.</span> <span class="nav-text"> 信号 </span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text"> 信号的基本概念 </span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E7%9A%84%E4%BA%A7%E7%94%9F"><span class="nav-number">2.2.</span> <span class="nav-text"> 信号的产生 </span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%9B%86%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text"> 信号集的操作 </span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E6%8D%95%E6%8D%89"><span class="nav-number">2.4.</span> <span class="nav-text"> 信号捕捉 </span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sigchld%20%E4%BF%A1%E5%8F%B7"><span class="nav-number">2.5.</span> <span class="nav-text">SIGCHLD 信号 </span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">CHFKA</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://chfka.github.io/2021/06/09/Linux(3)-1%E3%80%81%E4%BF%A1%E5%8F%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CHFKA">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHFKA">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          信号
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-09 23:37:06" itemprop="dateCreated datePublished" datetime="2021-06-09T23:37:06+08:00">2021-06-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2021-12-19 01:19:38" itemprop="dateModified" datetime="2021-12-19T01:19:38+08:00">2021-12-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="介绍"> 介绍 </h1>
+<p>​</p>
+<span id="more"></span>
+<h1 id="信号"> 信号 </h1>
+<h2 id="信号的基本概念"> 信号的基本概念 </h2>
+<ul>
+<li><p> 概念 </p>
+<ul>
+<li> 简单，不能带大量信息，满足特定条件发生 </li>
+<li> 内核产生信号，内核处理 </li>
+<li> 产生
+<ul>
+<li> 按键 </li>
+<li> 调用函数 </li>
+<li> 定时器 </li>
+<li> 命令 -- 系统 api 产生信号 kill 函数 </li>
+<li> 硬件异常 </li>
+</ul></li>
+<li> 状态
+<ul>
+<li> 产生 </li>
+<li> 递达 信号到达并且处理完 </li>
+<li> 未决 信号被阻塞 </li>
+</ul></li>
+<li> 默认处理方式
+<ul>
+<li> 忽略 </li>
+<li> 执行默认动作 </li>
+<li> 捕获 </li>
+</ul></li>
+<li>4 要素
+<ul>
+<li> 编号 </li>
+<li> 事件 </li>
+<li> 名称 </li>
+<li> 默认处理动作
+<ul>
+<li> 忽略 </li>
+<li> 终止 </li>
+<li> 终止 +core</li>
+<li> 暂停 </li>
+<li> 继续 </li>
+</ul></li>
+</ul></li>
+<li> 软件产生的中断，会有延迟 </li>
+<li>19 号信号不能捕捉，暂停，不能阻塞 </li>
+<li>0 号信号有特殊的含义 </li>
+</ul></li>
+<li><p> 阻塞信号集 </p>
+<p> 将某些信号加入集合，对他们设置屏蔽，当屏蔽 x 信号后，再收到该信号，该信号的处理将推后 (解除屏蔽后)</p></li>
+<li><p> 未决信号集 </p>
+<ul>
+<li> 信号产生，未决信号集中描述该信号的位立刻翻转为 1， 表信号处于未决状态。当信号被处理对应位翻转回 0。这一时刻往往非常短暂。</li>
+<li> 信号产生后由于某些原因 (主要是阻塞)，不能抵达。这类信号的集合称之为未决信号集。在屏蔽解除前，信号一直处于未决状态。</li>
+</ul></li>
+<li><p>kill(pid,sig) 用于发送信号。</p></li>
+</ul>
+<h2 id="信号的产生"> 信号的产生 </h2>
+<ul>
+<li><p> 系统 api 产生信号 </p>
+<ul>
+<li>kill 函数 </li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kill</span><span class="params">(<span class="keyword">pid_t</span> pid , <span class="keyword">int</span> sig)</span></span>;</span><br><span class="line"><span class="comment">//pid &gt; 0 , 要发送进程 ID</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// pid = 0，代表当前调用进程组内所有进程 </span></span><br><span class="line"><span class="comment">// pid = -1，代表有权限发送的所有进程 </span></span><br><span class="line"><span class="comment">// pid &lt; 0 ,  代表 -pid 对应的组内所有进程 </span></span><br><span class="line"><span class="comment">// sig 对应的信号 </span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>raise 函数 --- 给自己发信号 </p></li>
+<li><p>abort 函数 -- 给自己发送异常信号 </p></li>
+<li><p> 时钟信号 -- alarm 函数 </p>
+<ul>
+<li><p> 一次性 </p></li>
+<li><p>```c unsigned int alarm(unsigned int seconds); <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  - 定时给自己发送 SIGALRM 信号.</span><br><span class="line">  - 返回值，上次定时剩余的描述 </span><br><span class="line">  - 如果参数为 0，取消定时 </span><br><span class="line"></span><br><span class="line">- setitimer 函数 </span><br><span class="line"></span><br><span class="line">  - 周期性发送信号 </span><br><span class="line"></span><br><span class="line">  - &#96;&#96;&#96;c</span><br><span class="line">    int setitimer(int which ,const struct itimerval *new_value , struct itimerval *old_value);</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>which
+<ul>
+<li>ITIMER_REAL 自然定时法 SIGALLRM</li>
+<li>ITIMER_VIRTUAL 计算进程执行时间 SIGVTALRM</li>
+<li>ITIMER_PROT 进程执行时间 + 调度时间 ITIMER_VIRTUAL</li>
+</ul></li>
+<li>new_value 要设置的定时时间 </li>
+<li>old_value 原定时时间 </li>
+<li> 返回值 0 成功 -1 失败 </li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="信号集的操作"> 信号集的操作 </h2>
+<ul>
+<li><p> 操作函数 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigemptyset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>;<span class="comment">// 清空信号集 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigfillset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>;<span class="comment">// 填充信号集 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaddset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>,<span class="keyword">int</span> signum)</span></span>;<span class="comment">// 从集合中添加某个信号 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigdelset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>,<span class="keyword">int</span> signum)</span></span>;<span class="comment">// 从集合中删去某个信号 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigismember</span><span class="params">(<span class="keyword">const</span> <span class="keyword">sigset_t</span> *<span class="built_in">set</span>,<span class="keyword">int</span> signum)</span></span>;<span class="comment">// 是否为集合里的成员 </span></span><br></pre></td></tr></table></figure></li>
+<li><p> 设置阻塞或解除阻塞信号集 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigprocmask</span><span class="params">(<span class="keyword">int</span> how, <span class="keyword">const</span> <span class="keyword">sigset_t</span> *<span class="built_in">set</span> ,<span class="keyword">sigset_t</span> *oldset)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>how</p>
+<ul>
+<li><p>SIG_BLOCK 设置阻塞 </p></li>
+<li><p>SIG_UNBLOCK 解除阻塞 </p></li>
+<li><p>SIG_SETMASK 设置 set 为新的阻塞信号集 </p></li>
+</ul></li>
+<li><p>set 传入的信号集 </p></li>
+<li><p>oldset 旧的信号集，传出 </p></li>
+</ul></li>
+<li><p> 获取未决信号集 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigpending</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>set 传出参数，当前的未决信号集 </li>
+</ul></li>
+</ul>
+<h2 id="信号捕捉"> 信号捕捉 </h2>
+<ul>
+<li><p> 防止进程意外死亡 </p></li>
+<li><p> 捕捉函数 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*<span class="keyword">sighandler_t</span>)</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">singhandler_t</span> <span class="title">signal</span><span class="params">(<span class="keyword">int</span> signum,<span class="keyword">sighandler_t</span> handler)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>signum 要捕捉的信号 </li>
+<li>handler 要执行的捕捉函数指针，函数应该声明 void func(int);</li>
+</ul></li>
+<li><p> 注册捕捉函数 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaction</span><span class="params">(<span class="keyword">int</span> signum,<span class="keyword">const</span> struct sigaction *act ,struct sigaction *oldact)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>signum 要捕捉的信号 </li>
+<li>act 传入的动作 </li>
+<li>oldact 原动作 恢复现场 </li>
+</ul></li>
+<li><p> 例子 -- sigaction 捕捉 setitimer 产生信号 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">catch_sig</span><span class="params">(<span class="keyword">int</span> num)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;catch %d sig\n&quot;</span>,num);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    srtuct sigaction act;</span><br><span class="line">    act.sa_flags = <span class="number">0</span>;</span><br><span class="line">    act.sa_handler = catch_sig;</span><br><span class="line">    sigemptyset(&amp;act.sa_mask);</span><br><span class="line">    sigaction(SIGALRM,&amp;act,<span class="literal">NULL</span>);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">itimerval</span> <span class="title">myit</span> =</span> &#123;&#123;<span class="number">3</span>,<span class="number">0</span>&#125;,&#123;<span class="number">5</span>,<span class="number">0</span>&#125;&#125;;</span><br><span class="line">    setitimer(ITIMER_REAL,&amp;myit,<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p> 特性 </p>
+<ul>
+<li> 捕捉什么信号，捕捉期间自动屏蔽该信号 </li>
+<li> 阻塞的常规信号不支持排队，产生多次只记录一次（后 32 个信号支持排队）</li>
+<li> 进程正常运行时，默认 PCB 中有一个信号屏蔽字，它决定了进程自动屏蔽哪些信号。捕捉到了某个信号后, 执行期间的要屏蔽的信号不是由信号屏蔽字决定，而是用 sa_mask 来指定，信号处理函数调用完后再恢复.</li>
+</ul></li>
+</ul>
+<h2 id="sigchld 信号">SIGCHLD 信号 </h2>
+<ul>
+<li><p> 子进程暂停或者退出的时候会发送 SIGCHILD 信号，我们可以通过捕捉 SIGCHILD 信号来回收子进程 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">catch_sig</span><span class="params">(<span class="keyword">int</span> num)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> wpid ;</span><br><span class="line">    <span class="keyword">while</span>((wpid = waitpid(<span class="number">-1</span> , <span class="literal">NULL</span> , WNOHANG)) &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;wait child %d ok \n&quot;</span>,wpid);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>;i &lt; <span class="number">10</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        pid = fork();</span><br><span class="line">        <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">10</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span> ;</span></span><br><span class="line">        act.as_flags = <span class="number">0</span>;</span><br><span class="line">        sigemptyset(&amp;act.sa_mask);</span><br><span class="line">        act.ac_handler = catch_sig;</span><br><span class="line">        sigaction(SIGCHLD,&amp;act,<span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            sleep(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(i &lt; <span class="number">10</span>)</span><br><span class="line">    &#123;</span><br><span class="line">     	</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p> 注意事项 -- 当注册捕捉晚于子进程死亡时 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">catch_sig</span><span class="params">(<span class="keyword">int</span> num)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> wpid ;</span><br><span class="line">    <span class="keyword">while</span>((wpid = waitpid(<span class="number">-1</span> , <span class="literal">NULL</span> , WNOHANG)) &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;wait child %d ok \n&quot;</span>,wpid);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 在创建子进程前屏蔽 SIGCHLD 信号 </span></span><br><span class="line">    <span class="keyword">sigset_t</span> myset,oldset;</span><br><span class="line">    sigemptyset(&amp;myset);</span><br><span class="line">    sigaddset(&amp;myset,SIGCHLD);</span><br><span class="line">    <span class="comment">//oldset 保留现场  设置了 SIGCHLD 到阻塞信号集 </span></span><br><span class="line">    sigprocmask(SIG_BLOCK,&amp;oldset);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>;i &lt; <span class="number">10</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        pid = fork();</span><br><span class="line">        <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">10</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	sleep(<span class="number">2</span>);<span class="comment">// 模拟注册捕捉晚于子进程死亡时 </span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span> ;</span></span><br><span class="line">        act.as_flags = <span class="number">0</span>;</span><br><span class="line">        sigemptyset(&amp;act.sa_mask);</span><br><span class="line">        act.ac_handler = catch_sig;</span><br><span class="line">        sigaction(SIGCHLD,&amp;act,<span class="literal">NULL</span>);</span><br><span class="line">        <span class="comment">// 解除屏蔽现场 </span></span><br><span class="line">        sigprocmask(SIG_SETMASK,&amp;oldset ,<span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            sleep(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(i &lt; <span class="number">10</span>)</span><br><span class="line">    &#123;</span><br><span class="line">     	</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/09/Linux(2)-1%E3%80%81%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/" rel="prev" title="进程间通信">
+                  <i class="fa fa-chevron-left"></i> 进程间通信
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/12/Linux(5)-1%E3%80%81%E7%BA%BF%E7%A8%8B/" rel="next" title="线程">
+                  线程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHFKA</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
