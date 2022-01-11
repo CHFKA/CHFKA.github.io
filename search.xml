@@ -1784,8 +1784,7 @@ return 0;</code></pre>
 <li><p>按模式划分为：</p>
 <ul>
 <li><p>端系统:</p></li>
-<li><p>客户 / 服务模式(C/S):</p>
-<p>可扩展性差，当到达一定程度后会出现断崖式下降</p></li>
+<li><p>客户 / 服务模式(C/S): 可扩展性差，当到达一定程度后会出现断崖式下降</p></li>
 <li><p>对等模式(peer-peer):</p>
 <p>分布式，文件分发系统使用。既是客户端又是服务器，但服务器的扩容不能满足需求</p></li>
 </ul></li>
@@ -1823,10 +1822,10 @@ return 0;</code></pre>
 <li><p>传统电话网络采用</p></li>
 <li><p>特点：</p>
 <ul>
-<li><p>链路带宽、交换能力</p></li>
-<li><p>专用资源：不共享</p></li>
-<li><p>保证性能</p></li>
-<li><p>要求建立呼叫连接</p></li>
+<li>链路带宽、交换能力</li>
+<li>专用资源：不共享</li>
+<li>保证性能</li>
+<li>要求建立呼叫连接</li>
 </ul></li>
 <li><p>网络资源 (如带宽) 被分成片</p>
 <p>不适合计算机之间的通信</p>
@@ -1970,8 +1969,8 @@ return 0;</code></pre>
 </ul>
 <h2 id="internet 结构和 isp">Internet 结构和 ISP</h2>
 <ol type="1">
-<li><p>端系统通过接入 ISPs 连接到互联网</p></li>
-<li><p>接入 ISPs 相应的必须是互联的 -- 因此任何 2 个端系统可相互发送分组到对方</p></li>
+<li>端系统通过接入 ISPs 连接到互联网</li>
+<li>接入 ISPs 相应的必须是互联的 -- 因此任何 2 个端系统可相互发送分组到对方</li>
 </ol>
 <ul>
 <li><p>将每两个 ISPs 直接相连不可扩展需要 O(N)连接</p></li>
@@ -2214,28 +2213,154 @@ return 0;</code></pre>
   <entry>
     <title>计算机网络 (2)- 应用层</title>
     <url>/2022/01/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(2)-%E5%BA%94%E7%94%A8%E5%B1%82/</url>
-    <content><![CDATA[<h2 id="概述"> 概述 </h2>
+    <content><![CDATA[<h2 id="概述">概述</h2>
 <ul>
-<li><p> 网络应用的原理：网络应用协议的概念和实现方面 </p>
+<li><p>网络应用的原理：网络应用协议的概念和实现方面</p>
 <ul>
-<li><p> 传输层的服务模型 </p></li>
-<li><p> 客户 - 服务器模式 </p></li>
-<li><p> 对等模式 (peer to peer)</p></li>
-<li><p> 内容分发网络 </p></li>
+<li>传输层的服务模型</li>
+<li>客户 - 服务器模式</li>
+<li>对等模式(peer to peer)</li>
+<li>内容分发网络</li>
 </ul></li>
-<li><p> 网络应用的实例：互联网流行的应用层协议 </p>
+<li><p>网络应用的实例：互联网流行的应用层协议</p>
 <ul>
 <li>HTTP</li>
 <li>FTP</li>
 <li>SMTP/POP3/IMAP</li>
 <li>DNS</li>
 </ul></li>
-<li><p> 编程：网络应用程序 </p>
+<li><p>编程：网络应用程序</p>
 <ul>
-<li>Socket API-- 传输层提供的服务 <span id="more"></span></li>
+<li>Socket API-- 传输层提供的服务</li>
 </ul></li>
 </ul>
-<h2 id="协议原理"> 协议原理 </h2>
+<span id="more"></span>
+<h2 id="协议原理">协议原理</h2>
+<ul>
+<li><p>应用架构</p>
+<ul>
+<li><p>客户 - 服务器 (C/S) 体系结构 -- 达到一定量级后断崖式下降</p>
+<ul>
+<li><p>服务器</p>
+<ul>
+<li><p>一直运行</p></li>
+<li><p>固定的 IP 地址和周知的端口号</p></li>
+<li><p>扩展性：服务器场</p>
+<ul>
+<li>数据中心进行扩展</li>
+<li>扩展性差</li>
+</ul></li>
+</ul></li>
+<li><p>客户端</p>
+<ul>
+<li>主动与服务端通信</li>
+<li>与互联网有间歇性的连接</li>
+<li>可能是动态 IP 地址</li>
+<li>不直接与其他客户端通信</li>
+</ul></li>
+</ul></li>
+<li><p>对等模式(P2P: Peer To Peer)</p>
+<ul>
+<li><p>(几乎)没有一直运行的服务器</p></li>
+<li><p>任意端系统之间可以进行通信</p></li>
+<li><p>每一个节点即是客户端又是服务器</p>
+<ul>
+<li>自扩展性 - 新 peer 节点带来新的服务能力，当然也带来新的服务请求</li>
+</ul></li>
+<li><p>参与的主机间歇性连接且可以改变 IP 地址</p>
+<ul>
+<li>难以管理</li>
+</ul></li>
+</ul></li>
+<li><p>混合模式: 客户端 - 服务器和对等体系结构</p>
+<ul>
+<li><p>Napster</p>
+<ul>
+<li><p>文件搜索：集中</p>
+<ul>
+<li>主机在中心服务器上注册其资源</li>
+<li>主机向中心服务器查询资源位置</li>
+</ul></li>
+<li><p>文件传输：P2P</p>
+<ul>
+<li>任意 peer 节点之间</li>
+</ul></li>
+</ul></li>
+<li><p>即时通信</p>
+<ul>
+<li><p>在线检测：集中</p>
+<ul>
+<li>当用户上线时，向中心服务器注册其 IP 地址</li>
+<li>用户与中心服务器联系，以找到其在线好友的位置</li>
+</ul></li>
+<li><p>两个用户之间聊天：P2P</p></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p>进程通信</p>
+<p>进程：在主机上运行的应用程序</p>
+<ul>
+<li><p>在同一主机内，使用进程间通信机制通信</p></li>
+<li><p>不同主机，通过交换报文 (Message) 来通信</p>
+<ul>
+<li>使用 OS 提供的通信服务</li>
+<li>按照应用协议交换报文 -- 借助传输层提供的服务</li>
+</ul></li>
+<li><p>具体实现</p>
+<ul>
+<li>客户端进程：发起通信的进程</li>
+<li>服务器进程：等待连接的进程</li>
+</ul></li>
+<li><p>注意：P2P 架构的应用也有客户端进程和服务器进程之分</p></li>
+</ul></li>
+<li><p>分布式通信进程</p>
+<ul>
+<li><p>存在的问题</p>
+<ol type="1">
+<li><p>标示和寻址(服务用户)</p></li>
+<li><p>传输层 - 应用层提供服务是如何的(服务)</p>
+<ul>
+<li>位置：层间界面的 SAP [服务访问点] (TCP/IP：socket)</li>
+<li>形式：应用程序接口 API(TCP/IP：socket API)</li>
+</ul></li>
+<li><p>如何使用传输层提供的服务，实现应用进程之间的报文交换，实现应用(用户使用服务)</p>
+<ul>
+<li>定义应用层协议：报文格式，解释，时序等</li>
+<li>编制程序，使用 OS 提供的 API，调用网络基础设施提供通信服务传报文，实现应用时序等。</li>
+</ul></li>
+</ol></li>
+<li><p>解决方法</p>
+<ol type="1">
+<li><p>对进程进行编址 -addressing</p>
+<p>本质上一对主机进程间的通信由 2 个端节点构成</p>
+<ul>
+<li><p>进程为了接收报文，必须有一个 <strong> 标识</strong>：<strong>SAP</strong>(发送也需要标示)</p>
+<ul>
+<li>主机：唯一的 32 位 IP 地址 -- 仅仅有 IP 地址不能够唯一标示一个进程；在一条端系统上有很多应用进程在运行</li>
+<li>传输层协议：TCP 或 UDP</li>
+<li>端口号</li>
+</ul></li>
+<li><p>一个进程：用 IP+port 标示 端节点</p></li>
+</ul></li>
+<li><p>传输层提供的服务 -- 需要穿过层间的信息</p>
+<ul>
+<li><p>层间接口必须要携带的信息</p>
+<ul>
+<li>要传输的报文(对于本层来说：SDU)</li>
+</ul>
+<ul>
+<li>谁传的：对方的应用进程的标示：IP+TCP(UDP)端口</li>
+<li>传给谁：对方的应用进程的标示：对方的 IP+TCP(UDP)端口</li>
+</ul></li>
+<li><p>传输层实体 (TCP 或者 UDP 实体) 根据这些信息进行 TCP 报文段 (UDP 数据报) 的封装</p>
+<ul>
+<li>源端口号，目标端口号，数据等</li>
+<li>将 IP 地址往下交 IP 实体，用于封装 IP 数据报：源 IP，目标 IP</li>
+</ul></li>
+</ul></li>
+</ol></li>
+</ul></li>
+</ul>
 <h2 id="web-and-http">Web and HTTP</h2>
 <h2 id="ftp">FTP</h2>
 <h2 id="email">Email</h2>
@@ -2243,10 +2368,10 @@ return 0;</code></pre>
 <h3 id="pop3">POP3</h3>
 <h3 id="imap">IMAP</h3>
 <h2 id="dns">DNS</h2>
-<h2 id="p2p 应用">P2P 应用 </h2>
+<h2 id="p2p 应用">P2P 应用</h2>
 <h2 id="cdn">CDN</h2>
-<h2 id="tcpsocket 编程">TCP(Socket) 编程 </h2>
-<h2 id="udp 套接字编程">UDP 套接字编程 </h2>
+<h2 id="tcpsocket 编程">TCP(Socket)编程</h2>
+<h2 id="udp 套接字编程">UDP 套接字编程</h2>
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
