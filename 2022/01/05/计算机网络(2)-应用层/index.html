@@ -28,7 +28,7 @@
 <meta property="og:description" content="概述  网络应用的原理：网络应用协议的概念和实现方面  传输层的服务模型 客户-服务器模式 对等模式(peer to peer) 内容分发网络  网络应用的实例：互联网流行的应用层协议  HTTP FTP SMTP&#x2F;POP3&#x2F;IMAP DNS  编程：网络应用程序  Socket API--传输层提供的服务">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-01-05T14:00:59.000Z">
-<meta property="article:modified_time" content="2022-01-11T17:39:45.497Z">
+<meta property="article:modified_time" content="2022-06-29T13:59:28.252Z">
 <meta property="article:author" content="CHFKA">
 <meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
@@ -109,7 +109,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">协议原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">应用架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1"><span class="nav-number">2.2.</span> <span class="nav-text">进程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">分布式通信进程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web-and-http"><span class="nav-number">3.</span> <span class="nav-text">Web and HTTP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ftp"><span class="nav-number">4.</span> <span class="nav-text">FTP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#email"><span class="nav-number">5.</span> <span class="nav-text">Email</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#smtp"><span class="nav-number">5.1.</span> <span class="nav-text">SMTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pop3"><span class="nav-number">5.2.</span> <span class="nav-text">POP3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#imap"><span class="nav-number">5.3.</span> <span class="nav-text">IMAP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns"><span class="nav-number">6.</span> <span class="nav-text">DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#p2p%20%E5%BA%94%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">P2P 应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cdn"><span class="nav-number">8.</span> <span class="nav-text">CDN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpsocket%20%E7%BC%96%E7%A8%8B"><span class="nav-number">9.</span> <span class="nav-text">TCP(Socket)编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp%20%E5%A5%97%E6%8E%A5%E5%AD%97%E7%BC%96%E7%A8%8B"><span class="nav-number">10.</span> <span class="nav-text">UDP 套接字编程</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">协议原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">应用架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1"><span class="nav-number">2.2.</span> <span class="nav-text">进程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">分布式通信进程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web-and-http"><span class="nav-number">3.</span> <span class="nav-text">Web and HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AF%E8%AF%AD"><span class="nav-number">3.1.</span> <span class="nav-text">术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http"><span class="nav-number">3.2.</span> <span class="nav-text">HTTP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ftp"><span class="nav-number">4.</span> <span class="nav-text">FTP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#email"><span class="nav-number">5.</span> <span class="nav-text">Email</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#smtp"><span class="nav-number">5.1.</span> <span class="nav-text">SMTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pop3"><span class="nav-number">5.2.</span> <span class="nav-text">POP3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#imap"><span class="nav-number">5.3.</span> <span class="nav-text">IMAP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns"><span class="nav-number">6.</span> <span class="nav-text">DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#p2p%20%E5%BA%94%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">P2P 应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cdn"><span class="nav-number">8.</span> <span class="nav-text">CDN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpsocket%20%E7%BC%96%E7%A8%8B"><span class="nav-number">9.</span> <span class="nav-text">TCP(Socket)编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp%20%E5%A5%97%E6%8E%A5%E5%AD%97%E7%BC%96%E7%A8%8B"><span class="nav-number">10.</span> <span class="nav-text">UDP 套接字编程</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -198,7 +198,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-12 01:39:45" itemprop="dateModified" datetime="2022-01-12T01:39:45+08:00">2022-01-12</time>
+      <time title="修改时间：2022-06-29 21:59:28" itemprop="dateModified" datetime="2022-06-29T21:59:28+08:00">2022-06-29</time>
     </span>
 
   
@@ -354,10 +354,256 @@
 <li>源端口号，目标端口号，数据等</li>
 <li>将 IP 地址往下交 IP 实体，用于封装 IP 数据报：源 IP，目标 IP</li>
 </ul></li>
+<li><p>对于面向连接服务 (TCP) 的应用而言，套接字是 4 元组的具有本地意义的标识</p>
+<ul>
+<li>4 元组(源 IP，源 port，目标 IP，目标 port)</li>
+<li>唯一的指定了一个会话(2 个进程间的会话关系)</li>
+<li>应用使用这个标示，与远程的应用进行通信</li>
+<li>不必每个报文的发送都要指定这 4 元组</li>
+<li>使用的是类似句柄的存在</li>
+<li>便于管理、简单</li>
+<li>操作系统需要维护一张表 --socket 值 4 元组 + 状态</li>
+</ul></li>
+<li><p>UDP socket</p>
+<ul>
+<li>2 元组 (IP, port 源端指定)</li>
+<li>指定了应用所在的一个端节点</li>
+<li>在发送数据报时，采用创建好的本地套接字(标示 ID)，就不必每个报文中指明自己所采用的 ip 和 port</li>
+<li>但是在发送报文时，必须指定对发的 ip 和 UDP port</li>
+</ul></li>
+</ul></li>
+<li><p>使用传输层的提供的服务实现应用</p>
+<ul>
+<li>应用层协议 -- 是在应用的一部分
+<ul>
+<li>定义了运行在不同端系统上的应用进程如何交换报文
+<ul>
+<li>报文类型</li>
+<li>报文的类型的语法</li>
+<li>字段的语义：即字段取值的含义</li>
+<li>进程何时，如何发送报文及对报文进行响应的规则</li>
+</ul></li>
+<li>指标
+<ul>
+<li>数据丢失率</li>
+<li>延迟</li>
+<li>吞吐</li>
+<li>安全性
+<ul>
+<li>机密性</li>
+<li>完整性</li>
+<li>可认证性(鉴别)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>传输层提供的服务
+<ul>
+<li>TCP
+<ul>
+<li>可靠的传输服务</li>
+<li>流量控制</li>
+<li>拥塞控制</li>
+<li>不能提供的服务：时间保证、最小吞吐保证和安全</li>
+<li>面向连接</li>
+</ul></li>
+<li>UDP
+<ul>
+<li>不可靠</li>
+<li>不提供服务：可靠、流量控制、拥塞控制、时间、带宽保证、建立连接</li>
+<li>存在的理由
+<ul>
+<li>区分不同的进程</li>
+<li>无需连接</li>
+<li>不做可靠性的工作</li>
+<li>应用能够按照设定的速度发送数据</li>
+</ul></li>
+</ul></li>
+</ul></li>
 </ul></li>
 </ol></li>
+<li><p>安全 TCP</p>
+<ul>
+<li>SSL
+<ul>
+<li>在 TCP 上面实现，提供加密的 TCP 连接</li>
+<li>私密性</li>
+<li>数据完整性</li>
+<li>端到端的鉴别</li>
+<li>在应用层</li>
+</ul></li>
+</ul></li>
 </ul>
 <h2 id="web-and-http">Web and HTTP</h2>
+<h3 id="术语">术语</h3>
+<ul>
+<li>web 页：由一些对象组成
+<ul>
+<li><p>对象可以时 HTML 文件，JPEG 图像，Java 小程序，声音剪辑文件</p></li>
+<li><p>web 页含有一个基本的 HTML 文件，该基本 HTML 文件又包含若干对象的引用</p></li>
+<li><p>通过 URL 对每个对象进行引用</p>
+<ul>
+<li>访问协议，用户名，口令字，端口等</li>
+</ul></li>
+<li><p>URL 格式：</p>
+<p>协议名 用户：口令 主机名 路径名 端口 Prot：//ueser:psd@www.some.com/xxx.gif:port</p></li>
+</ul></li>
+</ul>
+<h3 id="http">HTTP</h3>
+<ul>
+<li>HTTP：超文本传输协议
+<ul>
+<li><p>web 的应用层协议</p></li>
+<li><p>客户 / 服务器模式</p>
+<ul>
+<li>客户：请求、接收和显示 Web 对象的浏览器</li>
+<li>服务器：对请求进行响应，发送对象的 Web 服务器</li>
+</ul></li>
+<li><p>工作原理：</p>
+<ul>
+<li>客户端发起一个与服务器的 TCP 连接(独立套接字)，端口号为 80</li>
+<li>服务器接受客户的 TCP 连接</li>
+<li>在浏览器 (HTTP 客户端) 与 Web 服务器 (HTTP 服务器 server) 交换 HTTP 报文(应用层协议报文)</li>
+<li>TCP 关闭</li>
+</ul>
+<p>注：HTTP 是 <strong> 无状态 </strong> 的：服务器不维护关于客户的任何信息。无状态的服务器能够支持更多的客户端。</p></li>
+<li><p>HTTP 连接</p>
+<ul>
+<li>非持久
+<ul>
+<li>最多只有一个对象在 TCP 连接上发送</li>
+<li>下载多个对象需要多个 TCP 连接</li>
+<li>HTTP/1.0 使用非持久连接</li>
+<li>缺点：
+<ul>
+<li>每个对象要 2 个 RTT</li>
+<li>操作系统必须为每个 TCP 连接分配资源</li>
+<li>但浏览器通常打开并行 TCP 连接，以获取引用对象</li>
+</ul></li>
+</ul></li>
+<li>持久
+<ul>
+<li>多个对象可以在一个(在客户端和服务器之间)TCP 连接上传输</li>
+<li>HTTP/1.1 默认使用持久连接</li>
+<li>服务器在发送响应后，仍保持 TCP 连接</li>
+<li>在相同客户端和服务器之间的后续请求和响应报文通过相同的连接进行传递</li>
+<li>客户端在遇到一个引用对象的时候，就可以尽快发送该对象的请求</li>
+<li>非流水方式的持久 HTTP：
+<ul>
+<li>客户端只能在收到前一个响应后才能发出新的请求</li>
+<li>每个引用对象花费一个 RTT</li>
+</ul></li>
+<li>流水方式的持久 HTTP
+<ul>
+<li>HTTP/1.1 的默认模式</li>
+<li>客户遇到一个引用对象就立即产生一个请求</li>
+<li>所有引用对象只花费一个 RTT 是可能的</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p>响应时间模型</p>
+<p>往返时间 RTT(round-trip-time)：一个小的分组从客户端到服务器，在回到客户端的时间 响应时间：</p>
+<ul>
+<li>一个 RTT 用来发起 TCP 连接</li>
+<li>一个 RTT 用来 HTTP 请求并等待 HTTP 响应</li>
+<li>文件传输</li>
+</ul>
+<p>注：共 2RTT+ 传输时间</p></li>
+<li><p>HTTP 请求报文</p>
+<ul>
+<li><p>类型：请求、响应</p></li>
+<li><p>请求报文： ASCII(人能阅读)</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">请求行（GET、POST、HEAD 命令）</span><br><span class="line"><span class="keyword">GET</span> <span class="string">/xxx/xxxx/page.html</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>www.xxx.com</span><br><span class="line"><span class="attribute">User-agent</span><span class="punctuation">: </span>Mozilla/4.0</span><br><span class="line">Connection：close</span><br><span class="line">Accept-language:fr</span><br><span class="line">-- 换行回车符，表示报文结束 --</span><br><span class="line">请求行 </span><br><span class="line"> 首部行 </span><br><span class="line"> 请求体</span><br></pre></td></tr></table></figure>
+<ul>
+<li>提交表单输入方式
+<ul>
+<li>Post
+<ol type="1">
+<li>网页通常包括表单输入</li>
+<li>包含在实体主体 (entity body) 中的输入被提交到服务器</li>
+</ol></li>
+<li>URL
+<ol type="1">
+<li>方法：GET</li>
+<li>输入通过请求行的 URL 字段上载</li>
+</ol></li>
+</ul></li>
+</ul></li>
+<li><p>方法类型</p>
+<ol type="1">
+<li>HTTP/1.0
+<ul>
+<li>GET</li>
+<li>POST</li>
+<li>HEAD：要求服务器在响应报文中不包含请求对象 -&gt; 故障跟踪</li>
+</ul></li>
+<li>HTTP/1.1
+<ul>
+<li>GET、POST、HEAD</li>
+<li>PUT：将实体主体中的文件上载到 URL 字段规定的路径中</li>
+<li>DELETE：删除 URL 字段规定的文件</li>
+</ul></li>
+</ol></li>
+</ul></li>
+<li><p>HTTP 响应报文</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">状态行 HTTP/1.1 200 OK\r\n</span><br><span class="line">首部行:</span><br><span class="line">      Connection close\r\n</span><br><span class="line">      Date:</span><br><span class="line">      Server</span><br><span class="line">      Last-Modified</span><br><span class="line">      Content-Length</span><br><span class="line">      Content-Type</span><br><span class="line">数据，如请求的 HTML 文件</span><br></pre></td></tr></table></figure></li>
+<li><p>用户 - 服务器状态：cookies-- 维护状态</p>
+<ul>
+<li>概念：
+<ul>
+<li>缓存既是客户端又是服务器</li>
+<li>通常缓存是由 ISP 安装(大学、公司、居民区 ISP)</li>
+</ul></li>
+<li>组成部分：
+<ul>
+<li>在 http 响应报文中有一个 cookie 的首部行</li>
+<li>在 http 请求报文含有一个 cookie 的首部行</li>
+<li>在用户端系统中保留有一个 cookie 文件，由用户的浏览器管理</li>
+<li>在 web 站点有一个后端数据库</li>
+</ul></li>
+<li>作用
+<ul>
+<li>用户验证</li>
+<li>购物车</li>
+<li>推荐</li>
+<li>用户状态（Web e-mail）</li>
+</ul></li>
+<li>如何维持状态
+<ul>
+<li>协议端节点：在多个事务上，发送端和接收端维持状态</li>
+<li>cookies： http 报文携带状态信息</li>
+</ul></li>
+<li>存在隐私性问题</li>
+</ul></li>
+<li><p>web cache 缓存(代理服务器)</p>
+<ul>
+<li><p>目的：不访问原始服务器，就满足客户的请求</p>
+<ul>
+<li>用户设置浏览器：通过缓存访问 web</li>
+<li>浏览器将所有的 HTTP 请求发给缓存
+<ul>
+<li>在缓存中的对象：缓存直接返回对象</li>
+<li>如果对象不在缓存。缓存请求原始服务器，然后再将对象返回给客户端</li>
+</ul></li>
+</ul></li>
+<li><p>使用的优点</p>
+<ol type="1">
+<li>降低客户端的请求响应时间</li>
+<li>可以大大减少一个机构内部与 Internet 接入链路上的流量</li>
+<li>互联网大量采用缓存：可以使较弱的 ICP 也能够有效提供内容</li>
+</ol></li>
+<li><p>缓存示例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">假设：</span><br><span class="line">平均对象大小 &#x3D; 100kb</span><br><span class="line">局域网的带宽为 1Gbps</span><br><span class="line">机构内浏览器对原始服务器的平均请求速率 &#x3D; 15 请求 &#x2F;s</span><br><span class="line">平均到浏览器的速率： 1.5Mbps</span><br><span class="line">机构内部路由器到原始服务器再返回到路由器的延时 &#x3D; 2s</span><br><span class="line">接入链路带宽： 1.54 Mbps</span><br><span class="line">结果：</span><br><span class="line">LAN 的流量强度 &#x3D; 0.15 %</span><br><span class="line">接入链路上的流量强度 &#x3D; 99%</span><br><span class="line">总延时 &#x3D; LAN 延时 + 接入延时 + Internet 延时 </span><br><span class="line"> 解决方法：</span><br><span class="line">1. 增加接入链路带宽(非常昂贵)</span><br><span class="line">2. 安装本地缓存</span><br><span class="line">  假设 0.6 需要去访问远程服务器</span><br><span class="line">  速率 &#x3D; 0.6 * 1.5 &#x3D; 0.9 Mbps</span><br><span class="line">  接入链路上的流量强度 &#x3D; 0.9 &#x2F; 1.54 &#x3D; 0.58</span><br><span class="line">  总体延迟 &#x3D; 0.6*（从原始服务器获取对象的延迟）+ 0.4（从缓存获取对象的延迟）</span><br></pre></td></tr></table></figure></li>
+<li><p>条件 GET 获取</p>
+<p>使用 Last-Modified 来判断缓存是否需要更新。</p>
+<ul>
+<li><p>缓存器在 HTTP 请求中指定缓存拷贝的日期：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if-modified-since：</span><br><span class="line">  &lt;date&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>服务器：如果对象没变返回下列所述。如果改变则正常返回</p></li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.0</span> <span class="number">304</span> Not</span><br><span class="line">  Modified</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+</ul></li>
+</ul>
 <h2 id="ftp">FTP</h2>
 <h2 id="email">Email</h2>
 <h3 id="smtp">SMTP</h3>
