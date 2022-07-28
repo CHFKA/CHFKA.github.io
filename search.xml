@@ -1885,7 +1885,7 @@ return 0;</code></pre>
 <ul>
 <li><p>35 用户时，&gt;=10 个用户活动的概率为 0.0004</p>
 <figure>
-<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/n 重伯努利模型.png" alt="计算公式"><figcaption aria-hidden="true">计算公式</figcaption>
+<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/1.png" alt="计算公式"><figcaption aria-hidden="true">计算公式</figcaption>
 </figure></li>
 <li><p>当大于等于 10 时，路由器没有裕量。所以为 9，这样当暂时发生分组排队时，在后来也能及时将数据发出</p></li>
 </ul></li>
@@ -2148,7 +2148,7 @@ return 0;</code></pre>
 </ul></li>
 <li><p>数据单元(DU)</p>
 <figure>
-<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/ 数据单元.png" alt="数据单元"><figcaption aria-hidden="true">数据单元</figcaption>
+<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/2.png" alt="数据单元"><figcaption aria-hidden="true">数据单元</figcaption>
 </figure>
 <ul>
 <li><p>各层次的协议数据单元(PDU):</p>
@@ -2682,7 +2682,7 @@ return 0;</code></pre>
 </ul></li>
 <li>多媒体扩展： MIME</li>
 </ul></li>
-<li>邮件访问协议 <img src="/2022/01/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(2)-%E5%BA%94%E7%94%A8%E5%B1%82/ 邮件访问协议.png" title="邮件访问协议" alt="邮件访问协议"></li>
+<li>邮件访问协议 <img src="/2022/01/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(2)-%E5%BA%94%E7%94%A8%E5%B1%82/1.png" title="邮件访问协议" alt="邮件访问协议"></li>
 </ul>
 <h3 id="pop3">POP3</h3>
 <ul>
