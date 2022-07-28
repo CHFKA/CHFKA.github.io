@@ -334,39 +334,61 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>exec 函数族</title>
-    <url>/2021/06/08/Linux(1)-3%E3%80%81exec%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
-<p>​</p>
+    <title>进程相关的概念</title>
+    <url>/2021/06/07/Linux(1)-1%E3%80%81%E8%BF%9B%E7%A8%8B%E7%9B%B8%E5%85%B3%E7%9A%84%E6%A6%82%E5%BF%B5/</url>
+    <content><![CDATA[<h1 id="介绍">介绍</h1>
+<p>​ 这是在 linux 环境下进程相关概念、要点。</p>
 <span id="more"></span>
-<h1 id="exec 函数族">exec 函数族 </h1>
+<h1 id="进程相关的概念">进程相关的概念</h1>
+<h2 id="进程与程序">进程与程序</h2>
 <ul>
-<li> 将当前进程的.text、.data 替换为所要加载的程序的.text、.data，然后让进程从新的.text 第一条指令开始执行，但进程 ID 不变，换核不换壳。</li>
-</ul>
-<h2 id="execl 函数">execl 函数 </h2>
+<li>运行着的程序
 <ul>
-<li><p> 执行其他程序 </p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execl</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path,<span class="keyword">const</span> <span class="keyword">char</span> *arg,...)</span></span>;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="excelp 函数">excelp 函数 </h2>
-<ul>
-<li><p> 执行程序的时候，使用 PATH 环境变量，执行的程序可以不用加路径 </p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execlp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *file,<span class="keyword">const</span> <span class="keyword">char</span> *arg,...)</span></span>;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>flie 要执行的程序 </li>
-<li>arg 参数列表
-<ul>
-<li> 参数列表最后需要一个 NULL 作为结尾，作为哨兵。</li>
+<li>操作 系统： 分配系统资源的基本单位</li>
+<li>程序员： 运行一系列指令的过程</li>
 </ul></li>
-<li> 返回值
+<li>区别
 <ul>
-<li> 只有失败才返回 </li>
-</ul></li>
+<li>程序占用磁盘，不占用系统资源</li>
+<li>内存占用系统资源</li>
+<li>一个程序对应多个进程，一个进程对应一个程序</li>
+<li>程序没有生命周期，进程有</li>
 </ul></li>
 </ul>
-<figure>
-<img src="/2021/06/08/Linux(1)-3%E3%80%81exec%E5%87%BD%E6%95%B0/exce 函数族.png" alt="exce 函数族"><figcaption aria-hidden="true">exce 函数族 </figcaption>
-</figure>
+<h2 id="进程的状态">进程的状态</h2>
+<ul>
+<li><p>就绪 -- 获得 cpu</p></li>
+<li><p>运行</p></li>
+<li><p>挂起 -- 主动失去 cpu 或缺少执行的数据，获得数据或资源后成为就绪。</p></li>
+<li><p>终止 --- 任何状态都能变换到终止</p></li>
+</ul>
+<h2 id="mmu 的作用 --- 内存管理单元">MMU 的作用 --- 内存管理单元</h2>
+<ul>
+<li><p>虚拟内存与物理内存的映射</p></li>
+<li><p>设置修改内存访问级别</p></li>
+<li><p>用户空间映射到物理空间是独立的</p></li>
+</ul>
+<h2 id="进程控制块 pcb">进程控制块 PCB</h2>
+<p>​ 每个进程在内核都有一个进程控制块 (PCB) 来维护进程相关的信息，linux 内核的进程控制块是 task struct 结构体.</p>
+<ul>
+<li><p>进程 id</p></li>
+<li><p>进程的状态</p></li>
+<li><p>描述虚拟地址空间的信息</p></li>
+<li><p>进程切换时需要保存和恢复的一些 CPU 寄存器</p></li>
+<li><p>描述控制终端的信息</p></li>
+<li><p>当前工作目录</p></li>
+<li><p>umask 掩码</p></li>
+<li><p>文件描述表</p></li>
+<li><p>和信号相关的信息</p></li>
+<li><p>用户 id 和组 id</p></li>
+<li><p>会话和进程组</p></li>
+<li><p>进程可以使用的资源上限</p></li>
+</ul>
+<h2 id="环境变量">环境变量</h2>
+<ul>
+<li><p>env 写法： key = val</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//.bashrc  </span></span><br><span class="line"><span class="keyword">export</span> key = val;</span><br><span class="line"><span class="comment">// 获取环境变量</span></span><br><span class="line">getenv(<span class="keyword">const</span> <span class="keyword">char</span> *name);</span><br></pre></td></tr></table></figure></li>
+</ul>
 ]]></content>
       <tags>
         <tag>linux</tag>
@@ -433,61 +455,39 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>进程相关的概念</title>
-    <url>/2021/06/07/Linux(1)-1%E3%80%81%E8%BF%9B%E7%A8%8B%E7%9B%B8%E5%85%B3%E7%9A%84%E6%A6%82%E5%BF%B5/</url>
-    <content><![CDATA[<h1 id="介绍">介绍</h1>
-<p>​ 这是在 linux 环境下进程相关概念、要点。</p>
+    <title>exec 函数族</title>
+    <url>/2021/06/08/Linux(1)-3%E3%80%81exec%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
+<p>​</p>
 <span id="more"></span>
-<h1 id="进程相关的概念">进程相关的概念</h1>
-<h2 id="进程与程序">进程与程序</h2>
+<h1 id="exec 函数族">exec 函数族 </h1>
 <ul>
-<li>运行着的程序
+<li> 将当前进程的.text、.data 替换为所要加载的程序的.text、.data，然后让进程从新的.text 第一条指令开始执行，但进程 ID 不变，换核不换壳。</li>
+</ul>
+<h2 id="execl 函数">execl 函数 </h2>
 <ul>
-<li>操作 系统： 分配系统资源的基本单位</li>
-<li>程序员： 运行一系列指令的过程</li>
+<li><p> 执行其他程序 </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execl</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path,<span class="keyword">const</span> <span class="keyword">char</span> *arg,...)</span></span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="excelp 函数">excelp 函数 </h2>
+<ul>
+<li><p> 执行程序的时候，使用 PATH 环境变量，执行的程序可以不用加路径 </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execlp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *file,<span class="keyword">const</span> <span class="keyword">char</span> *arg,...)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>flie 要执行的程序 </li>
+<li>arg 参数列表
+<ul>
+<li> 参数列表最后需要一个 NULL 作为结尾，作为哨兵。</li>
 </ul></li>
-<li>区别
+<li> 返回值
 <ul>
-<li>程序占用磁盘，不占用系统资源</li>
-<li>内存占用系统资源</li>
-<li>一个程序对应多个进程，一个进程对应一个程序</li>
-<li>程序没有生命周期，进程有</li>
+<li> 只有失败才返回 </li>
+</ul></li>
 </ul></li>
 </ul>
-<h2 id="进程的状态">进程的状态</h2>
-<ul>
-<li><p>就绪 -- 获得 cpu</p></li>
-<li><p>运行</p></li>
-<li><p>挂起 -- 主动失去 cpu 或缺少执行的数据，获得数据或资源后成为就绪。</p></li>
-<li><p>终止 --- 任何状态都能变换到终止</p></li>
-</ul>
-<h2 id="mmu 的作用 --- 内存管理单元">MMU 的作用 --- 内存管理单元</h2>
-<ul>
-<li><p>虚拟内存与物理内存的映射</p></li>
-<li><p>设置修改内存访问级别</p></li>
-<li><p>用户空间映射到物理空间是独立的</p></li>
-</ul>
-<h2 id="进程控制块 pcb">进程控制块 PCB</h2>
-<p>​ 每个进程在内核都有一个进程控制块 (PCB) 来维护进程相关的信息，linux 内核的进程控制块是 task struct 结构体.</p>
-<ul>
-<li><p>进程 id</p></li>
-<li><p>进程的状态</p></li>
-<li><p>描述虚拟地址空间的信息</p></li>
-<li><p>进程切换时需要保存和恢复的一些 CPU 寄存器</p></li>
-<li><p>描述控制终端的信息</p></li>
-<li><p>当前工作目录</p></li>
-<li><p>umask 掩码</p></li>
-<li><p>文件描述表</p></li>
-<li><p>和信号相关的信息</p></li>
-<li><p>用户 id 和组 id</p></li>
-<li><p>会话和进程组</p></li>
-<li><p>进程可以使用的资源上限</p></li>
-</ul>
-<h2 id="环境变量">环境变量</h2>
-<ul>
-<li><p>env 写法： key = val</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//.bashrc  </span></span><br><span class="line"><span class="keyword">export</span> key = val;</span><br><span class="line"><span class="comment">// 获取环境变量</span></span><br><span class="line">getenv(<span class="keyword">const</span> <span class="keyword">char</span> *name);</span><br></pre></td></tr></table></figure></li>
-</ul>
+<figure>
+<img src="/2021/06/08/Linux(1)-3%E3%80%81exec%E5%87%BD%E6%95%B0/exce 函数族.png" alt="exce 函数族"><figcaption aria-hidden="true">exce 函数族 </figcaption>
+</figure>
 ]]></content>
       <tags>
         <tag>linux</tag>
@@ -651,44 +651,6 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>守护进程</title>
-    <url>/2021/06/12/Linux(4)-1%E3%80%81%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/</url>
-    <content><![CDATA[<h1 id="介绍">介绍</h1>
-<p>​</p>
-<span id="more"></span>
-<h1 id="守护进程">守护进程</h1>
-<h2 id="进场组">进场组</h2>
-<ul>
-<li>代表一个或多个进程的基合。</li>
-</ul>
-<h2 id="会话 --- 多个进程组对应一个会话">会话 -- 多个进程组对应一个会话</h2>
-<ul>
-<li><p>调用进程不能是进程组组长，该进程变成新会话首进程</p></li>
-<li><p>该进程成为一个新进程组的组长进程</p></li>
-<li><p>新会话丢弃原有的控制终端，该会话没有控制终端</p></li>
-<li><p>该调用进程是组长进程，则出错返回</p></li>
-<li><p>建立新会话时，先调用 fork，父进程终止，子进程调用 setsid</p></li>
-</ul>
-<h2 id="setsid 函数">setsid 函数</h2>
-<ul>
-<li><p>获取进程所属的会话 ID</p></li>
-<li><p>```c pid_t getsid(pid_t pid); <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">  </span><br><span class="line">  - 成功：返回调用进程的会话 ID，失败：-1，设置 errno</span><br><span class="line">  </span><br><span class="line">  - pid 为 0 表示察看当前基层 session ID</span><br><span class="line"></span><br><span class="line">## 守护进程 </span><br><span class="line"></span><br><span class="line">- 调用 setsid 函数创建一个新的 Session，并成为 Session Leader</span><br><span class="line"></span><br><span class="line">- 创建守护进程模型</span><br><span class="line">  </span><br><span class="line">  - 创建子进程，父进程退出</span><br><span class="line">    </span><br><span class="line">    - 所有工作在子进程中进行形式上脱离了控制终端</span><br><span class="line">  </span><br><span class="line">  - 在子进程中创建新会话</span><br><span class="line">    </span><br><span class="line">    - setsid() 函数 </span><br><span class="line">    </span><br><span class="line">    - 使子进程完全独立出来，脱离控制</span><br><span class="line">  </span><br><span class="line">  - 改变当前目录为根目录  -- 非必须</span><br><span class="line">    </span><br><span class="line">    - chdir() 函数 </span><br><span class="line">    </span><br><span class="line">    - 防止占用可卸载的文件系统</span><br><span class="line">    </span><br><span class="line">    - 也可以换成其他路径</span><br><span class="line">  </span><br><span class="line">  - 重设文件权限掩码</span><br><span class="line">    </span><br><span class="line">    - umask() 函数</span><br><span class="line">    </span><br><span class="line">    - 防止继承的文件创建屏蔽子拒绝某些权限</span><br><span class="line">    </span><br><span class="line">    - 增加守护进程灵活性</span><br><span class="line">  </span><br><span class="line">  - 关闭文件描述符</span><br><span class="line">    </span><br><span class="line">    - 继承的打开文件不会用到，浪费系统资源，无法卸载</span><br><span class="line">  </span><br><span class="line">  - 开始执行守护进程核心工作</span><br><span class="line">  </span><br><span class="line">  - 守护进程退出处理程序模型</span><br><span class="line"></span><br><span class="line">- 创建守护进程</span><br><span class="line">  </span><br><span class="line">  - &#96;&#96;&#96;c</span><br><span class="line">    #include&lt;stdio.h&gt;</span><br><span class="line">    #include&lt;unistd.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;types.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;stat.h&gt;</span><br><span class="line">    #include&lt;fcntl.h&gt;</span><br><span class="line">    #include&lt;string&gt;</span><br><span class="line">    #include&lt;stdlib.h&gt;</span><br><span class="line">    #include&lt;signal.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;time.h&gt;</span><br><span class="line">    #include&lt;time.h&gt;</span><br><span class="line">    #define _FILE_NAME_FORMAT_  &quot;%s&#x2F;log&#x2F;mydaemon.%ld&quot;  &#x2F;&#x2F; 定义文件格式化</span><br><span class="line">    </span><br><span class="line">    void touchfile(int num)</span><br><span class="line">    </span><br><span class="line">        char *HomeDir &#x3D; getenv(&quot;HOME&quot;);</span><br><span class="line">        char strFilename[256] &#x3D; &#123;0&#125;;</span><br><span class="line">        sprintf(strFilename,_FILE_NAME_FORMAT_ ,HomeDir,time(NULL));</span><br><span class="line">        int fd &#x3D; open(strFilename,O_RDWR|O_CREAT , 0666);</span><br><span class="line">        if(fd &lt; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            perror(&quot;open error&quot;);</span><br><span class="line">            exit(1);    </span><br><span class="line">        &#125;</span><br><span class="line">        close(fd;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    int main()</span><br><span class="line">    &#123;</span><br><span class="line">        &#x2F;&#x2F; 创建子进程，父进程退出</span><br><span class="line">        pid_t pid &#x3D; fork();</span><br><span class="line">        if(pid &gt; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            exit(1);</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 当会长</span><br><span class="line">        setsid();</span><br><span class="line">        &#x2F;&#x2F; 设置掩码</span><br><span class="line">        umask(0);</span><br><span class="line">        &#x2F;&#x2F; 切换目录</span><br><span class="line">        chdir(getenv(&quot;HOME&quot;));</span><br><span class="line">        &#x2F;&#x2F; 关闭文件描述符</span><br><span class="line">        &#x2F;&#x2F;close(1),close(2),close(3)</span><br><span class="line">        &#x2F;&#x2F; 执行核心逻辑</span><br><span class="line">        struct itimerval myit &#x3D; &#123;&#123;60,0&#125;,&#123;1,0&#125;&#125;;</span><br><span class="line">        setitmer(ITIMER_REAL,&amp;myit,NULL);</span><br><span class="line">        struct sigaction act;</span><br><span class="line">        act.sa_flags &#x3D; 0;</span><br><span class="line">        sigemtyset(&amp;act.sa_mask);</span><br><span class="line">        act.sa_handler &#x3D; touchfile;</span><br><span class="line">        sigaction(SIGALRM,&amp;act,NULL);</span><br><span class="line">        while(1)</span><br><span class="line">        &#123;</span><br><span class="line">    </span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 退出</span><br><span class="line">        return 0;</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure></p></li>
-<li><p>扩展</p>
-<ul>
-<li><p>通过 nohup 指令也可以达到守护进程创建的效果</p></li>
-<li><p>nohup cmd [&gt; 1.log]&amp;</p>
-<ul>
-<li><p>nohup 指令会让 cmd 收不到 SIGHUP 信号</p></li>
-<li><p>&amp; 代表后台运行</p></li>
-</ul></li>
-</ul></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>信号</title>
     <url>/2021/06/09/Linux(3)-1%E3%80%81%E4%BF%A1%E5%8F%B7/</url>
     <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
@@ -836,39 +798,41 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>hello-hexo</title>
-    <url>/2020/11/18/hello-hexo/</url>
-    <content><![CDATA[<p> 这是用 hexo 搭建 Blog 后第一个文章记录一下。之后将在这里更新一些平时学习的东西，供自己复习。<br>
-<span id="more"></span></p>
-<h2 id="现在的坑"> 现在的坑：</h2>
-<p>### 1、UE4</p>
-<ol type="1">
-<li><del> 新手入门 -- 张嘉诚 </del><br>
-</li>
-<li><del> 制作小游戏 -TD https://github.com/CHFKA/TD.git 跟着做的视频 https://www.bilibili.com/video/BV15z411B7sb</del></li>
-</ol>
-<h3 id="c">2、C</h3>
-<ol type="1">
-<li><del>linux 学习 -- 黑马视频 </del></li>
-<li><del>web 服务器 -socket select poll epoll libevent</del></li>
-<li>CJson 项目 </li>
-</ol>
-<h3 id="c-1">3、C++</h3>
-<ol type="1">
-<li><del>01 - 侯捷 - C++ 面向对象高级开发（上下两部曲）</del></li>
-<li><del>02 - 侯捷 - STL 标准库和泛型编程 </del></li>
-</ol>
-<h3 id="数据结构与算法">4、数据结构与算法 </h3>
-<ol type="1">
-<li>ACWing 视频学习 -- 进度：数据结构（三）</li>
-</ol>
-<h3 id="计算机网络">5、计算机网络 </h3>
-<ol type="1">
-<li> 中科大郑烇、杨坚全套《计算机网络（自顶向下方法 第 7 版，James F.Kurose，Keith W.Ross）》课程 </li>
-</ol>
+    <title>守护进程</title>
+    <url>/2021/06/12/Linux(4)-1%E3%80%81%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="介绍">介绍</h1>
+<p>​</p>
+<span id="more"></span>
+<h1 id="守护进程">守护进程</h1>
+<h2 id="进场组">进场组</h2>
+<ul>
+<li>代表一个或多个进程的基合。</li>
+</ul>
+<h2 id="会话 --- 多个进程组对应一个会话">会话 -- 多个进程组对应一个会话</h2>
+<ul>
+<li><p>调用进程不能是进程组组长，该进程变成新会话首进程</p></li>
+<li><p>该进程成为一个新进程组的组长进程</p></li>
+<li><p>新会话丢弃原有的控制终端，该会话没有控制终端</p></li>
+<li><p>该调用进程是组长进程，则出错返回</p></li>
+<li><p>建立新会话时，先调用 fork，父进程终止，子进程调用 setsid</p></li>
+</ul>
+<h2 id="setsid 函数">setsid 函数</h2>
+<ul>
+<li><p>获取进程所属的会话 ID</p></li>
+<li><p>```c pid_t getsid(pid_t pid); <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">  </span><br><span class="line">  - 成功：返回调用进程的会话 ID，失败：-1，设置 errno</span><br><span class="line">  </span><br><span class="line">  - pid 为 0 表示察看当前基层 session ID</span><br><span class="line"></span><br><span class="line">## 守护进程 </span><br><span class="line"></span><br><span class="line">- 调用 setsid 函数创建一个新的 Session，并成为 Session Leader</span><br><span class="line"></span><br><span class="line">- 创建守护进程模型</span><br><span class="line">  </span><br><span class="line">  - 创建子进程，父进程退出</span><br><span class="line">    </span><br><span class="line">    - 所有工作在子进程中进行形式上脱离了控制终端</span><br><span class="line">  </span><br><span class="line">  - 在子进程中创建新会话</span><br><span class="line">    </span><br><span class="line">    - setsid() 函数 </span><br><span class="line">    </span><br><span class="line">    - 使子进程完全独立出来，脱离控制</span><br><span class="line">  </span><br><span class="line">  - 改变当前目录为根目录  -- 非必须</span><br><span class="line">    </span><br><span class="line">    - chdir() 函数 </span><br><span class="line">    </span><br><span class="line">    - 防止占用可卸载的文件系统</span><br><span class="line">    </span><br><span class="line">    - 也可以换成其他路径</span><br><span class="line">  </span><br><span class="line">  - 重设文件权限掩码</span><br><span class="line">    </span><br><span class="line">    - umask() 函数</span><br><span class="line">    </span><br><span class="line">    - 防止继承的文件创建屏蔽子拒绝某些权限</span><br><span class="line">    </span><br><span class="line">    - 增加守护进程灵活性</span><br><span class="line">  </span><br><span class="line">  - 关闭文件描述符</span><br><span class="line">    </span><br><span class="line">    - 继承的打开文件不会用到，浪费系统资源，无法卸载</span><br><span class="line">  </span><br><span class="line">  - 开始执行守护进程核心工作</span><br><span class="line">  </span><br><span class="line">  - 守护进程退出处理程序模型</span><br><span class="line"></span><br><span class="line">- 创建守护进程</span><br><span class="line">  </span><br><span class="line">  - &#96;&#96;&#96;c</span><br><span class="line">    #include&lt;stdio.h&gt;</span><br><span class="line">    #include&lt;unistd.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;types.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;stat.h&gt;</span><br><span class="line">    #include&lt;fcntl.h&gt;</span><br><span class="line">    #include&lt;string&gt;</span><br><span class="line">    #include&lt;stdlib.h&gt;</span><br><span class="line">    #include&lt;signal.h&gt;</span><br><span class="line">    #include&lt;sys&#x2F;time.h&gt;</span><br><span class="line">    #include&lt;time.h&gt;</span><br><span class="line">    #define _FILE_NAME_FORMAT_  &quot;%s&#x2F;log&#x2F;mydaemon.%ld&quot;  &#x2F;&#x2F; 定义文件格式化</span><br><span class="line">    </span><br><span class="line">    void touchfile(int num)</span><br><span class="line">    </span><br><span class="line">        char *HomeDir &#x3D; getenv(&quot;HOME&quot;);</span><br><span class="line">        char strFilename[256] &#x3D; &#123;0&#125;;</span><br><span class="line">        sprintf(strFilename,_FILE_NAME_FORMAT_ ,HomeDir,time(NULL));</span><br><span class="line">        int fd &#x3D; open(strFilename,O_RDWR|O_CREAT , 0666);</span><br><span class="line">        if(fd &lt; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            perror(&quot;open error&quot;);</span><br><span class="line">            exit(1);    </span><br><span class="line">        &#125;</span><br><span class="line">        close(fd;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    int main()</span><br><span class="line">    &#123;</span><br><span class="line">        &#x2F;&#x2F; 创建子进程，父进程退出</span><br><span class="line">        pid_t pid &#x3D; fork();</span><br><span class="line">        if(pid &gt; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            exit(1);</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 当会长</span><br><span class="line">        setsid();</span><br><span class="line">        &#x2F;&#x2F; 设置掩码</span><br><span class="line">        umask(0);</span><br><span class="line">        &#x2F;&#x2F; 切换目录</span><br><span class="line">        chdir(getenv(&quot;HOME&quot;));</span><br><span class="line">        &#x2F;&#x2F; 关闭文件描述符</span><br><span class="line">        &#x2F;&#x2F;close(1),close(2),close(3)</span><br><span class="line">        &#x2F;&#x2F; 执行核心逻辑</span><br><span class="line">        struct itimerval myit &#x3D; &#123;&#123;60,0&#125;,&#123;1,0&#125;&#125;;</span><br><span class="line">        setitmer(ITIMER_REAL,&amp;myit,NULL);</span><br><span class="line">        struct sigaction act;</span><br><span class="line">        act.sa_flags &#x3D; 0;</span><br><span class="line">        sigemtyset(&amp;act.sa_mask);</span><br><span class="line">        act.sa_handler &#x3D; touchfile;</span><br><span class="line">        sigaction(SIGALRM,&amp;act,NULL);</span><br><span class="line">        while(1)</span><br><span class="line">        &#123;</span><br><span class="line">    </span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 退出</span><br><span class="line">        return 0;</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure></p></li>
+<li><p>扩展</p>
+<ul>
+<li><p>通过 nohup 指令也可以达到守护进程创建的效果</p></li>
+<li><p>nohup cmd [&gt; 1.log]&amp;</p>
+<ul>
+<li><p>nohup 指令会让 cmd 收不到 SIGHUP 信号</p></li>
+<li><p>&amp; 代表后台运行</p></li>
+</ul></li>
+</ul></li>
+</ul>
 ]]></content>
       <tags>
-        <tag>简介</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -1034,6 +998,42 @@ return 0;</code></pre>
 ]]></content>
       <tags>
         <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hello-hexo</title>
+    <url>/2020/11/18/hello-hexo/</url>
+    <content><![CDATA[<p> 这是用 hexo 搭建 Blog 后第一个文章记录一下。之后将在这里更新一些平时学习的东西，供自己复习。<br>
+<span id="more"></span></p>
+<h2 id="现在的坑"> 现在的坑：</h2>
+<p>### 1、UE4</p>
+<ol type="1">
+<li><del> 新手入门 -- 张嘉诚 </del><br>
+</li>
+<li><del> 制作小游戏 -TD https://github.com/CHFKA/TD.git 跟着做的视频 https://www.bilibili.com/video/BV15z411B7sb</del></li>
+</ol>
+<h3 id="c">2、C</h3>
+<ol type="1">
+<li><del>linux 学习 -- 黑马视频 </del></li>
+<li><del>web 服务器 -socket select poll epoll libevent</del></li>
+<li>CJson 项目 </li>
+</ol>
+<h3 id="c-1">3、C++</h3>
+<ol type="1">
+<li><del>01 - 侯捷 - C++ 面向对象高级开发（上下两部曲）</del></li>
+<li><del>02 - 侯捷 - STL 标准库和泛型编程 </del></li>
+</ol>
+<h3 id="数据结构与算法">4、数据结构与算法 </h3>
+<ol type="1">
+<li>ACWing 视频学习 -- 进度：数据结构（三）</li>
+</ol>
+<h3 id="计算机网络">5、计算机网络 </h3>
+<ol type="1">
+<li> 中科大郑烇、杨坚全套《计算机网络（自顶向下方法 第 7 版，James F.Kurose，Keith W.Ross）》课程 </li>
+</ol>
+]]></content>
+      <tags>
+        <tag>简介</tag>
       </tags>
   </entry>
   <entry>
@@ -1275,57 +1275,6 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>堆</title>
-    <url>/2021/09/21/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(15)--%E5%A0%86/</url>
-    <content><![CDATA[<h1 id="介绍">介绍</h1>
-<p>如何手写一个堆</p>
-<ol type="1">
-<li>插入一个数</li>
-<li>求集合当中的最小值</li>
-<li>删除最小值</li>
-<li>删除任意一个元素</li>
-<li>修改任意一个元素</li>
-</ol>
-<span id="more"></span>
-<h1 id="堆">堆</h1>
-<p>基本结构：一棵完全二叉树。</p>
-<ul>
-<li>小根堆：父节点的值小于或等于子节点的值；</li>
-<li>大根堆：父节点的值大于或等于子节点的值；</li>
-</ul>
-<p>存储：使用 1 维数组存储。假设存储根节点的下标为 x，则左子节点为 2x，右子节点为 2x+1。</p>
-<p>操作：down(x);up(x);---- x 代表下标</p>
-<h2 id="downx 操作">down(x)操作</h2>
-<ul>
-<li>本质是一个递归过程</li>
-</ul>
-<hr>
-<p>输入一个长度为 n 的整数数列，从小到大输出前 m 小的数。</p>
-<hr>
-<p>实现：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> h[N],size;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">down</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> t = u;</span><br><span class="line">    <span class="keyword">if</span>(u * <span class="number">2</span> &lt;= size &amp;&amp; h[u * <span class="number">2</span>] &lt; h[t]) t = u * <span class="number">2</span>;<span class="comment">// 比较当前节点的左子节点 </span></span><br><span class="line">    <span class="keyword">if</span>(u * <span class="number">2</span> + <span class="number">1</span> &lt;= size &amp;&amp; h[u * <span class="number">2</span> + <span class="number">1</span>] &lt; h[t]) t = u * <span class="number">2</span> + <span class="number">1</span>;<span class="comment">// 比较当前节点的右子节点</span></span><br><span class="line">    <span class="keyword">if</span>(u != t)<span class="comment">// 根据下标变换对应的值</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">swap</span>(h[u], h[t]);</span><br><span class="line">        <span class="built_in">down</span>(t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;h[i]);</span><br><span class="line">    size = n;</span><br><span class="line">    <span class="comment">// 建堆  O(n) 时间复杂度</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = n / <span class="number">2</span>; i; i--) <span class="built_in">down</span>(i);</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,h[<span class="number">1</span>]);</span><br><span class="line">        h[<span class="number">1</span>] = h[size];</span><br><span class="line">        size--;</span><br><span class="line">        <span class="built_in">down</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="upx 操作">up(x)操作</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">up</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(u / <span class="number">2</span> &amp;&amp; h[u / <span class="number">2</span>] &gt; h[u])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">swap</span>(h[u/<span class="number">2</span>], h[u]);</span><br><span class="line">        u /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="模拟堆">模拟堆</h2>
-<p>维护一个集合，初始时集合为空，支持如下几种操作：</p>
-<ol type="1">
-<li><code>I x</code>，插入一个数 xx；</li>
-<li><code>PM</code>，输出当前集合中的最小值；</li>
-<li><code>DM</code>，删除当前集合中的最小值（数据保证此时的最小值唯一）；</li>
-<li><code>D k</code>，删除第 kk 个插入的数；</li>
-<li><code>C k x</code>，修改第 kk 个插入的数，将其变为 xx；</li>
-</ol>
-<p>现在要进行 N 次操作，对于所有第 2 个操作，输出当前集合的最小值。</p>
-<hr>
-<p>实现：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> h[N],size;</span><br><span class="line"><span class="comment">//hp 是 heap pointer 的缩写，表示堆数组中下标到第 k 个插入的映射</span></span><br><span class="line"><span class="comment">//ph 是 pointer heap 的缩写，表示第 k 个插入到堆数组中的下标的映射</span></span><br><span class="line"><span class="comment">// 两个互为逆函数。</span></span><br><span class="line"><span class="keyword">int</span> ph[N], hp[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">heap_swap</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">swap</span>(ph[hp[a]],ph[hp[b]]);</span><br><span class="line">    <span class="built_in">swap</span>(hp[a], hp[b]);</span><br><span class="line">    <span class="built_in">swap</span>(h[a], h[b]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">up</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(u / <span class="number">2</span> &amp;&amp; h[u / <span class="number">2</span>] &gt; h[u])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">heap_swap</span>(u/<span class="number">2</span>, u);</span><br><span class="line">        u /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">down</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> t = u;</span><br><span class="line">    <span class="keyword">if</span>(u * <span class="number">2</span> &lt;= size &amp;&amp; h[u * <span class="number">2</span>] &lt; h[t]) t = u * <span class="number">2</span>;<span class="comment">// 比较当前节点的左子节点</span></span><br><span class="line">    <span class="keyword">if</span>(u * <span class="number">2</span> + <span class="number">1</span> &lt;= size &amp;&amp; h[u * <span class="number">2</span> + <span class="number">1</span>] &lt; h[t]) t = u * <span class="number">2</span> + <span class="number">1</span>;<span class="comment">// 比较当前节点的右子节点</span></span><br><span class="line">    <span class="keyword">if</span>(u != t)<span class="comment">// 根据下标变换对应的值</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">heap_swap</span>(u, t);</span><br><span class="line">        <span class="built_in">down</span>(t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">    <span class="keyword">while</span>(n--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">char</span> op[<span class="number">10</span>];</span><br><span class="line">        <span class="keyword">int</span> k,x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,op);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(op,<span class="string">&quot;I&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;x);</span><br><span class="line">            size++;</span><br><span class="line">            m++;</span><br><span class="line">            ph[m] = size, hp[size] = m;</span><br><span class="line">            h[size] = x;</span><br><span class="line">            <span class="built_in">up</span>(size);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(op,<span class="string">&quot;PM&quot;</span>)) <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, h[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(op,<span class="string">&quot;DM&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">heap_swap</span>(<span class="number">1</span>,size);</span><br><span class="line">            size -- ;</span><br><span class="line">            <span class="built_in">down</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(op,<span class="string">&quot;D&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;k);</span><br><span class="line">            k = ph[k];</span><br><span class="line">            <span class="built_in">heap_swap</span>(k,size);</span><br><span class="line">            size -- ;</span><br><span class="line">            <span class="built_in">down</span>(k),</span><br><span class="line">            <span class="built_in">up</span>(k);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;k, &amp;x);</span><br><span class="line">            k =ph[k];</span><br><span class="line">            h[k] = x;</span><br><span class="line">            <span class="built_in">down</span>(k);</span><br><span class="line">            <span class="built_in">up</span>(k);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>为什么会用 ph 和 hp 这两个数组呢？ 原因在于在删除第 k 个插入元素的操作中，我们首先得知道第 k 个插入元素在堆数组中的什么位置，即堆数组下标是啥。很显然，用一个 ph 数组来存储会方便查找。这样我们就知道了第 k 个插入的元素在哪了。然后我们需要做的是和堆尾元素交换，最后再在原来第 k 个元素所在的位置进行 down 和 up 操作。由于交换完后 ph[k]的值变了，为 ph[size]了，所以必须要在之前保存 ph[k]的值，不然无法进行 down 和 up 操作。</p>
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Trie 树</title>
     <url>/2021/09/19/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(13)--Trie%E6%A0%91/</url>
     <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
@@ -1390,6 +1339,57 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>堆</title>
+    <url>/2021/09/21/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(15)--%E5%A0%86/</url>
+    <content><![CDATA[<h1 id="介绍">介绍</h1>
+<p>如何手写一个堆</p>
+<ol type="1">
+<li>插入一个数</li>
+<li>求集合当中的最小值</li>
+<li>删除最小值</li>
+<li>删除任意一个元素</li>
+<li>修改任意一个元素</li>
+</ol>
+<span id="more"></span>
+<h1 id="堆">堆</h1>
+<p>基本结构：一棵完全二叉树。</p>
+<ul>
+<li>小根堆：父节点的值小于或等于子节点的值；</li>
+<li>大根堆：父节点的值大于或等于子节点的值；</li>
+</ul>
+<p>存储：使用 1 维数组存储。假设存储根节点的下标为 x，则左子节点为 2x，右子节点为 2x+1。</p>
+<p>操作：down(x);up(x);---- x 代表下标</p>
+<h2 id="downx 操作">down(x)操作</h2>
+<ul>
+<li>本质是一个递归过程</li>
+</ul>
+<hr>
+<p>输入一个长度为 n 的整数数列，从小到大输出前 m 小的数。</p>
+<hr>
+<p>实现：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> h[N],size;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">down</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> t = u;</span><br><span class="line">    <span class="keyword">if</span>(u * <span class="number">2</span> &lt;= size &amp;&amp; h[u * <span class="number">2</span>] &lt; h[t]) t = u * <span class="number">2</span>;<span class="comment">// 比较当前节点的左子节点 </span></span><br><span class="line">    <span class="keyword">if</span>(u * <span class="number">2</span> + <span class="number">1</span> &lt;= size &amp;&amp; h[u * <span class="number">2</span> + <span class="number">1</span>] &lt; h[t]) t = u * <span class="number">2</span> + <span class="number">1</span>;<span class="comment">// 比较当前节点的右子节点</span></span><br><span class="line">    <span class="keyword">if</span>(u != t)<span class="comment">// 根据下标变换对应的值</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">swap</span>(h[u], h[t]);</span><br><span class="line">        <span class="built_in">down</span>(t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;h[i]);</span><br><span class="line">    size = n;</span><br><span class="line">    <span class="comment">// 建堆  O(n) 时间复杂度</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = n / <span class="number">2</span>; i; i--) <span class="built_in">down</span>(i);</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,h[<span class="number">1</span>]);</span><br><span class="line">        h[<span class="number">1</span>] = h[size];</span><br><span class="line">        size--;</span><br><span class="line">        <span class="built_in">down</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="upx 操作">up(x)操作</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">up</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(u / <span class="number">2</span> &amp;&amp; h[u / <span class="number">2</span>] &gt; h[u])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">swap</span>(h[u/<span class="number">2</span>], h[u]);</span><br><span class="line">        u /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="模拟堆">模拟堆</h2>
+<p>维护一个集合，初始时集合为空，支持如下几种操作：</p>
+<ol type="1">
+<li><code>I x</code>，插入一个数 xx；</li>
+<li><code>PM</code>，输出当前集合中的最小值；</li>
+<li><code>DM</code>，删除当前集合中的最小值（数据保证此时的最小值唯一）；</li>
+<li><code>D k</code>，删除第 kk 个插入的数；</li>
+<li><code>C k x</code>，修改第 kk 个插入的数，将其变为 xx；</li>
+</ol>
+<p>现在要进行 N 次操作，对于所有第 2 个操作，输出当前集合的最小值。</p>
+<hr>
+<p>实现：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> h[N],size;</span><br><span class="line"><span class="comment">//hp 是 heap pointer 的缩写，表示堆数组中下标到第 k 个插入的映射</span></span><br><span class="line"><span class="comment">//ph 是 pointer heap 的缩写，表示第 k 个插入到堆数组中的下标的映射</span></span><br><span class="line"><span class="comment">// 两个互为逆函数。</span></span><br><span class="line"><span class="keyword">int</span> ph[N], hp[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">heap_swap</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">swap</span>(ph[hp[a]],ph[hp[b]]);</span><br><span class="line">    <span class="built_in">swap</span>(hp[a], hp[b]);</span><br><span class="line">    <span class="built_in">swap</span>(h[a], h[b]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">up</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(u / <span class="number">2</span> &amp;&amp; h[u / <span class="number">2</span>] &gt; h[u])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">heap_swap</span>(u/<span class="number">2</span>, u);</span><br><span class="line">        u /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">down</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> t = u;</span><br><span class="line">    <span class="keyword">if</span>(u * <span class="number">2</span> &lt;= size &amp;&amp; h[u * <span class="number">2</span>] &lt; h[t]) t = u * <span class="number">2</span>;<span class="comment">// 比较当前节点的左子节点</span></span><br><span class="line">    <span class="keyword">if</span>(u * <span class="number">2</span> + <span class="number">1</span> &lt;= size &amp;&amp; h[u * <span class="number">2</span> + <span class="number">1</span>] &lt; h[t]) t = u * <span class="number">2</span> + <span class="number">1</span>;<span class="comment">// 比较当前节点的右子节点</span></span><br><span class="line">    <span class="keyword">if</span>(u != t)<span class="comment">// 根据下标变换对应的值</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">heap_swap</span>(u, t);</span><br><span class="line">        <span class="built_in">down</span>(t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">    <span class="keyword">while</span>(n--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">char</span> op[<span class="number">10</span>];</span><br><span class="line">        <span class="keyword">int</span> k,x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,op);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(op,<span class="string">&quot;I&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;x);</span><br><span class="line">            size++;</span><br><span class="line">            m++;</span><br><span class="line">            ph[m] = size, hp[size] = m;</span><br><span class="line">            h[size] = x;</span><br><span class="line">            <span class="built_in">up</span>(size);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(op,<span class="string">&quot;PM&quot;</span>)) <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, h[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(op,<span class="string">&quot;DM&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">heap_swap</span>(<span class="number">1</span>,size);</span><br><span class="line">            size -- ;</span><br><span class="line">            <span class="built_in">down</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(op,<span class="string">&quot;D&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;k);</span><br><span class="line">            k = ph[k];</span><br><span class="line">            <span class="built_in">heap_swap</span>(k,size);</span><br><span class="line">            size -- ;</span><br><span class="line">            <span class="built_in">down</span>(k),</span><br><span class="line">            <span class="built_in">up</span>(k);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;k, &amp;x);</span><br><span class="line">            k =ph[k];</span><br><span class="line">            h[k] = x;</span><br><span class="line">            <span class="built_in">down</span>(k);</span><br><span class="line">            <span class="built_in">up</span>(k);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为什么会用 ph 和 hp 这两个数组呢？ 原因在于在删除第 k 个插入元素的操作中，我们首先得知道第 k 个插入元素在堆数组中的什么位置，即堆数组下标是啥。很显然，用一个 ph 数组来存储会方便查找。这样我们就知道了第 k 个插入的元素在哪了。然后我们需要做的是和堆尾元素交换，最后再在原来第 k 个元素所在的位置进行 down 和 up 操作。由于交换完后 ph[k]的值变了，为 ph[size]了，所以必须要在之前保存 ph[k]的值，不然无法进行 down 和 up 操作。</p>
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>哈希表</title>
     <url>/2021/09/24/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(16)--%E5%93%88%E5%B8%8C%E8%A1%A8/</url>
     <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
@@ -1447,56 +1447,6 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>二分</title>
-    <url>/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(3)--%E4%BA%8C%E5%88%86/</url>
-    <content><![CDATA[<h1 id="介绍">介绍</h1>
-<p>​</p>
-<span id="more"></span>
-<h1 id="整数二分 -- 有序">整数二分 -- 有序</h1>
-<ul>
-<li><p>本质：</p>
-<ul>
-<li><p>二分某区间中满足某种性质的边界点</p></li>
-<li><p>有单调性一定可以二分，二分不一定需要单调性</p></li>
-</ul></li>
-<li><p>mid = (l+r+1)/2</p></li>
-<li><p>判断 mid 是否满足 -- 去更新区间</p>
-<ul>
-<li>满足：[mid , r] l = mid;</li>
-<li>不满足 ： [l, mid -1] r = mid - 1;</li>
-</ul></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 区间 [l,r] 被划分成[l,mid] 和[mid+1,r] 时使用 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bsearch_1</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">check</span>(mid)) r = mid; <span class="comment">//check() 判断 mid 是否满足性质 </span></span><br><span class="line">        <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 区间[l, r] 被划分成[l,mid - 1] 和 [mid ,r] 时使用</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bsearch_2</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">check</span>(mid)) l = mid;</span><br><span class="line">        <span class="keyword">else</span> r = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="浮点二分 --- 有序">浮点二分 -- 有序</h1>
-<ul>
-<li>不需要像整数二分那样考虑边界</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 开方</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> x;</span><br><span class="line">    cin &gt;&gt; x;</span><br><span class="line">    <span class="keyword">double</span> l = <span class="number">0</span>, r = x;</span><br><span class="line">    <span class="comment">// 确定精度 ，一般多 2 </span></span><br><span class="line">    <span class="keyword">while</span>(r - <span class="number">1</span> &gt; <span class="number">0.0000001</span>)<span class="comment">//for(int i = 0; i &lt; 100; i++) 相当于区间长度 /2^100</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">double</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(mid * mid &gt;= x) r = mid;</span><br><span class="line">        <span class="keyword">else</span> l = mid</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%lf\n&quot;</span>, l);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>归并</title>
-    <url>/2021/07/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(2)--%E5%BD%92%E5%B9%B6/</url>
-    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
-<p>​</p>
-<span id="more"></span>
-<h1 id="归并排序 - 分治"> 归并排序 - 分治 </h1>
-<ul>
-<li> 确定分界点 mid（l+r）/2 是下标 <br>
-</li>
-<li> 递归排序左右两区间 </li>
-<li><strong> 归并 -- 两个有序的数组合并 </strong></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1000010</span>;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> q[N],tmp[N];</span><br><span class="line"><span class="comment">// 归并模板 </span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">merge_sort</span><span class="params">(<span class="keyword">int</span> q[], <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span>(l&gt;=r) <span class="keyword">return</span> ;</span><br><span class="line">     <span class="keyword">int</span> mid = l + r &gt;&gt; <span class="number">1</span>;</span><br><span class="line">     <span class="built_in">merge_sort</span>(q, l, mid);</span><br><span class="line">     <span class="built_in">merge_sort</span>(q, mid+<span class="number">1</span>, r);</span><br><span class="line">     <span class="keyword">int</span> k = <span class="number">0</span>,i = l, j = mid +<span class="number">1</span>;</span><br><span class="line">     <span class="keyword">while</span>(i &lt;= mid &amp;&amp; j &lt;= r)</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="keyword">if</span>(q[i] &lt; =q[j]) tmp[k++] = q[i++];</span><br><span class="line">         <span class="keyword">else</span> tmp[k++] = q[j++];</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">while</span>(i &lt;= mid) tmp[k++] = q[i++];</span><br><span class="line">     <span class="keyword">while</span>(j &lt;= r) tmp[k++] = q[j++];</span><br><span class="line">     <span class="keyword">for</span>(i = l, j = <span class="number">0</span>; i &lt;= r; i++,j++ ) q[i] = tmp[j];</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;q[i]);</span><br><span class="line">    <span class="built_in">merge_sort</span>(q, <span class="number">0</span>, n<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, q[i]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>STL</title>
     <url>/2021/10/04/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(17)--STL/</url>
     <content><![CDATA[<h1 id="介绍">介绍</h1>
@@ -1526,6 +1476,56 @@ return 0;</code></pre>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">和上面类似，增删改查的时间复杂度是 O(1)</span><br><span class="line">不支持 lower_bound()&#x2F;upper_bound()， 迭代器的 ++，--</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="bitset--- 压位">bitset-- 压位</h2>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bitset&lt;10000&gt; s;</span><br><span class="line">~, &amp;, |, ^</span><br><span class="line">&gt;&gt;, &lt;&lt;</span><br><span class="line">&#x3D;&#x3D;, !&#x3D;</span><br><span class="line">[]</span><br><span class="line"></span><br><span class="line">count()  返回有多少个 1</span><br><span class="line">any()  判断是否至少有一个 1</span><br><span class="line">none()  判断是否全为 0</span><br><span class="line"></span><br><span class="line">set()  把所有位置成 1</span><br><span class="line">set(k, v)  将第 k 位变成 v</span><br><span class="line">reset()  把所有位变成 0</span><br><span class="line">flip()  等价于~</span><br><span class="line">flip(k) 把第 k 位取反</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>归并</title>
+    <url>/2021/07/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(2)--%E5%BD%92%E5%B9%B6/</url>
+    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
+<p>​</p>
+<span id="more"></span>
+<h1 id="归并排序 - 分治"> 归并排序 - 分治 </h1>
+<ul>
+<li> 确定分界点 mid（l+r）/2 是下标 <br>
+</li>
+<li> 递归排序左右两区间 </li>
+<li><strong> 归并 -- 两个有序的数组合并 </strong></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1000010</span>;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> q[N],tmp[N];</span><br><span class="line"><span class="comment">// 归并模板 </span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">merge_sort</span><span class="params">(<span class="keyword">int</span> q[], <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span>(l&gt;=r) <span class="keyword">return</span> ;</span><br><span class="line">     <span class="keyword">int</span> mid = l + r &gt;&gt; <span class="number">1</span>;</span><br><span class="line">     <span class="built_in">merge_sort</span>(q, l, mid);</span><br><span class="line">     <span class="built_in">merge_sort</span>(q, mid+<span class="number">1</span>, r);</span><br><span class="line">     <span class="keyword">int</span> k = <span class="number">0</span>,i = l, j = mid +<span class="number">1</span>;</span><br><span class="line">     <span class="keyword">while</span>(i &lt;= mid &amp;&amp; j &lt;= r)</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="keyword">if</span>(q[i] &lt; =q[j]) tmp[k++] = q[i++];</span><br><span class="line">         <span class="keyword">else</span> tmp[k++] = q[j++];</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">while</span>(i &lt;= mid) tmp[k++] = q[i++];</span><br><span class="line">     <span class="keyword">while</span>(j &lt;= r) tmp[k++] = q[j++];</span><br><span class="line">     <span class="keyword">for</span>(i = l, j = <span class="number">0</span>; i &lt;= r; i++,j++ ) q[i] = tmp[j];</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;q[i]);</span><br><span class="line">    <span class="built_in">merge_sort</span>(q, <span class="number">0</span>, n<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, q[i]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>二分</title>
+    <url>/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(3)--%E4%BA%8C%E5%88%86/</url>
+    <content><![CDATA[<h1 id="介绍">介绍</h1>
+<p>​</p>
+<span id="more"></span>
+<h1 id="整数二分 -- 有序">整数二分 -- 有序</h1>
+<ul>
+<li><p>本质：</p>
+<ul>
+<li><p>二分某区间中满足某种性质的边界点</p></li>
+<li><p>有单调性一定可以二分，二分不一定需要单调性</p></li>
+</ul></li>
+<li><p>mid = (l+r+1)/2</p></li>
+<li><p>判断 mid 是否满足 -- 去更新区间</p>
+<ul>
+<li>满足：[mid , r] l = mid;</li>
+<li>不满足 ： [l, mid -1] r = mid - 1;</li>
+</ul></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 区间 [l,r] 被划分成[l,mid] 和[mid+1,r] 时使用 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bsearch_1</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">check</span>(mid)) r = mid; <span class="comment">//check() 判断 mid 是否满足性质 </span></span><br><span class="line">        <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 区间[l, r] 被划分成[l,mid - 1] 和 [mid ,r] 时使用</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bsearch_2</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">check</span>(mid)) l = mid;</span><br><span class="line">        <span class="keyword">else</span> r = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="浮点二分 --- 有序">浮点二分 -- 有序</h1>
+<ul>
+<li>不需要像整数二分那样考虑边界</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 开方</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> x;</span><br><span class="line">    cin &gt;&gt; x;</span><br><span class="line">    <span class="keyword">double</span> l = <span class="number">0</span>, r = x;</span><br><span class="line">    <span class="comment">// 确定精度 ，一般多 2 </span></span><br><span class="line">    <span class="keyword">while</span>(r - <span class="number">1</span> &gt; <span class="number">0.0000001</span>)<span class="comment">//for(int i = 0; i &lt; 100; i++) 相当于区间长度 /2^100</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">double</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(mid * mid &gt;= x) r = mid;</span><br><span class="line">        <span class="keyword">else</span> l = mid</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%lf\n&quot;</span>, l);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -1563,25 +1563,6 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>双指针算法</title>
-    <url>/2021/08/02/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(6)--%E5%8F%8C%E6%8C%87%E9%92%88%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
-<p>​</p>
-<span id="more"></span>
-<h1 id="双指针算法"> 双指针算法 </h1>
-<p> 在快排和归并算法中都有运用。</p>
-<p> 核心思想：把使用暴力双重 for 循环的 O(n^2) 的情况优化到 O(n)。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>（i = <span class="number">0</span>, j = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">while</span>(j&lt;i &amp;&amp; <span class="built_in">check</span>(i,j)) j++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> 给定一个长度为 n 的整数序列，请找出最长的不包含重复的数的连续区间，输出它的长度 </p>
-<hr>
-<p> 实现：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N =<span class="number">100010</span>;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> a[N],s[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        s[a[i]]++;</span><br><span class="line">        <span class="keyword">while</span>(s[a[i]] &gt; <span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            s[a[j]]--;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        res = <span class="built_in">max</span>(res, i - j + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; res &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>前缀和与差分</title>
     <url>/2021/07/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(5)--%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86/</url>
     <content><![CDATA[<h1 id="介绍">介绍</h1>
@@ -1597,7 +1578,7 @@ return 0;</code></pre>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> a[N],s[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n,&amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;a[i]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) s[i] = s[i - <span class="number">1</span>] + a[i];</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l,r;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;l,&amp;r);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,s[r]-s[l<span class="number">-1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="二维前缀和">二维前缀和</h3>
 <figure>
-<img src="/2021/07/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(5)--%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86/前缀和与差分.png" alt="前缀和与差分"><figcaption aria-hidden="true">前缀和与差分</figcaption>
+<img src="/2021/07/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(5)--%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86/ 前缀和与差分.png" alt="前缀和与差分"><figcaption aria-hidden="true">前缀和与差分</figcaption>
 </figure>
 <p>计算二维前缀和：<span class="math inline">\(\mathbf{S}_{[i,j]} =\mathbf{a}_{[1,1]}+\mathbf{a}_{[1,2]} +\mathbf{a}_{[1,j]}+\mathbf{a}_{[2,1]}+\mathbf{a}_{[2,2]}+....+\mathbf{a}_{[i,j]}\)</span></p>
 <p>即：<span class="math inline">\(\mathbf{S}_{[\mathbf{i},\mathbf{j}]} = \mathbf{S}_{[\mathbf{i}-1，\mathbf{j}]}+\mathbf{S}_{[\mathbf{i}-1，\mathbf{j}]}-\mathbf{S}_{[\mathbf{i}-1，\mathbf{j}-1]}+\mathbf{a}_{[\mathbf{i}，\mathbf{j}]}\)</span></p>
@@ -1614,7 +1595,7 @@ return 0;</code></pre>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N =<span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> a[N], b[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r,<span class="keyword">int</span> c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    b[l] += c;</span><br><span class="line">    b[r + <span class="number">1</span>] -= c;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n,&amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;a[i]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) <span class="built_in">insert</span>(i,i,a[i]);</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l,r,c;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>,&amp;l,&amp;r,&amp;c);</span><br><span class="line">        <span class="built_in">insert</span>(l,r,c);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) b[i] += b[i<span class="number">-1</span>];<span class="comment">// 将 b 数组转换为其前缀和</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,b[i]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="二维差分">二维差分</h3>
 <figure>
-<img src="/2021/07/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(5)--%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86/前缀和与差分.png" alt="前缀和与差分"><figcaption aria-hidden="true">前缀和与差分</figcaption>
+<img src="/2021/07/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(5)--%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86/ 前缀和与差分.png" alt="前缀和与差分"><figcaption aria-hidden="true">前缀和与差分</figcaption>
 </figure>
 <p>给定原矩阵 a[i,j], 构造差分矩阵 b[i,j], 使得 a[i,j] 是 b[i,j]的前缀和</p>
 <p>差分核心操作：给以 (x1,y1) 为左上角,(x2,y2)为右下角的子矩阵中的所有数 a[i,j], 加上 c。</p>
@@ -1625,6 +1606,25 @@ return 0;</code></pre>
 <p>​ <span class="math inline">\(\mathbf{b}_{[\mathbf{x}_2+1,\mathbf{y}_2+1]} \,+= \,C\)</span></p>
 <p>实现：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N =<span class="number">1010</span>;</span><br><span class="line"><span class="keyword">int</span> n, m. q;</span><br><span class="line"><span class="keyword">int</span> a[N][N],b[N][N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> x1, <span class="keyword">int</span> y1,<span class="keyword">int</span> x2,<span class="keyword">int</span> y2,<span class="keyword">int</span> c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    b[x1][y1] += c;</span><br><span class="line">    b[x1][y2+<span class="number">1</span>] -= c;</span><br><span class="line">    b[x2+<span class="number">1</span>][y1] -= c;</span><br><span class="line">    b[x2+<span class="number">1</span>][y2+<span class="number">1</span>] += c;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>,&amp;n,&amp;m,&amp;q);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= m; j++)</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;a[i][j]);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= m; j++)</span><br><span class="line">            <span class="built_in">insert</span>(i,j,i,j,a[i][j]);</span><br><span class="line">    <span class="keyword">while</span>(q--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> x1,y1,x2,y2;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d%d&quot;</span>,&amp;x1,&amp;y1,&amp;x2,&amp;y2);</span><br><span class="line">        <span class="built_in">insert</span>(x1,y1,x2,y2);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j =<span class="number">1</span>; j &lt;= m; j++)</span><br><span class="line">            a[i][j] = a[i<span class="number">-1</span>][j] + a[i][j<span class="number">-1</span>] -a[a<span class="number">-1</span>][j<span class="number">-1</span>] + b[i][j];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= m; j++) <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>,a[i][j]);</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>双指针算法</title>
+    <url>/2021/08/02/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(6)--%E5%8F%8C%E6%8C%87%E9%92%88%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
+<p>​</p>
+<span id="more"></span>
+<h1 id="双指针算法"> 双指针算法 </h1>
+<p> 在快排和归并算法中都有运用。</p>
+<p> 核心思想：把使用暴力双重 for 循环的 O(n^2) 的情况优化到 O(n)。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>（i = <span class="number">0</span>, j = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">while</span>(j&lt;i &amp;&amp; <span class="built_in">check</span>(i,j)) j++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 给定一个长度为 n 的整数序列，请找出最长的不包含重复的数的连续区间，输出它的长度 </p>
+<hr>
+<p> 实现：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N =<span class="number">100010</span>;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> a[N],s[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        s[a[i]]++;</span><br><span class="line">        <span class="keyword">while</span>(s[a[i]] &gt; <span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            s[a[j]]--;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        res = <span class="built_in">max</span>(res, i - j + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; res &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -1657,6 +1657,556 @@ return 0;</code></pre>
 ]]></content>
       <tags>
         <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>离散化</title>
+    <url>/2021/08/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(8)--%E7%A6%BB%E6%95%A3%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
+<p>​ 特指整数有序的离散化 </p>
+<p> 假定有一个无限长的数轴，数轴上每个坐标上的数都是 0。</p>
+<p> 现在，我们首先进行 n 次操作，每次操作将某一位置 x 上的数加 c。</p>
+<p> 接下来，进行 m 次询问，每个询问包含两个整数 l 和 r，你需要求出在区间 [l,r] 之间的所有数的和。</p>
+<span id="more"></span>
+<h2 id="离散化"> 离散化 </h2>
+<ul>
+<li> 含义：把无限空间中有限的个体映射到有限的空间中去 </li>
+<li> 目标：在不改变数据相对大小的条件下，对数据进行相应的缩小 </li>
+<li> 注意：
+<ul>
+<li> 有重复元素需要去重。</li>
+<li> 如何去算离散化后的值 ---- 二分 </li>
+</ul></li>
+</ul>
+<hr>
+<p> 假定有一个无限长的数轴，数轴上每个坐标上的数都是 0。</p>
+<p> 现在，我们首先进行 n 次操作，每次操作将某一位置 x 上的数加 c。</p>
+<p> 接下来，进行 m 次询问，每个询问包含两个整数 l 和 r，你需要求出在区间 [l,r] 之间的所有数的和 </p>
+<hr>
+<p> 实现：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII; </span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">300010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> a[N],s[N];</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; alls;</span><br><span class="line">vector&lt;PII&gt;add,query;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = alls.<span class="built_in">size</span>()<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(alls[mid] &gt;= x) r = mid;</span><br><span class="line">        <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt;::<span class="function">iterator <span class="title">unique</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt; &amp;a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a.<span class="built_in">size</span>(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(!i || a[i] != a[i<span class="number">-1</span>])</span><br><span class="line">          a[j++] = a[i];</span><br><span class="line">        <span class="comment">//a[0] ~ a[j-1] 所有 a 中不重复的数 </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a.<span class="built_in">begin</span>() + j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span>  i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> x,c;</span><br><span class="line">        cin &gt;&gt; x &gt;&gt; c;</span><br><span class="line">        add.<span class="built_in">push_back</span>(&#123;x, c&#125;);</span><br><span class="line">        alls.<span class="built_in">push_back</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l,r;</span><br><span class="line">        cin &gt;&gt; l &gt;&gt; r;</span><br><span class="line">        query.<span class="built_in">push_back</span>(&#123;l,r&#125;);</span><br><span class="line">        alls.<span class="built_in">push_back</span>(l);</span><br><span class="line">        alls.<span class="built_in">push_back</span>(r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 去重 </span></span><br><span class="line">    <span class="built_in">sort</span>(alls.<span class="built_in">begin</span>(),alls.<span class="built_in">end</span>());</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 使用 stl  alls.erase(unique(alls.begin(),alls.end()),alls.end());</span></span><br><span class="line">    <span class="comment">// 使用自己编写的 </span></span><br><span class="line">    <span class="comment">// 处理插入 unique</span></span><br><span class="line">    alls.<span class="built_in">erase</span>(<span class="built_in">unique</span>(alls),alls.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> item : add)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> x = <span class="built_in">find</span>(item.first);</span><br><span class="line">        a[x] += item.second;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 预处理前缀和 </span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= alls.<span class="built_in">size</span>(); i++) s[i] = s[i <span class="number">-1</span>] + a[i];</span><br><span class="line">    <span class="comment">// 处理查询 </span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> item : query)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="built_in">find</span>(item.first), r = <span class="built_in">find</span>(item.second);</span><br><span class="line">        cout &lt;&lt; s[r] - s[l<span class="number">-1</span>] &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>区间合并</title>
+    <url>/2021/08/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(9)--%E5%8C%BA%E9%97%B4%E5%90%88%E5%B9%B6/</url>
+    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
+<p> 给定 n 个区间 [l,r]，要求合并所有有交集的区间。</p>
+<p> 注意如果在端点处相交，也算有交集。</p>
+<p> 输出合并完成后的区间个数。</p>
+<p> 例如：[1,3] 和 [2,6] 可以合并为一个区间 [1,6]。</p>
+<span id="more"></span>
+<h2 id="区间合并"> 区间合并 </h2>
+<ul>
+<li> 按区间左端点排序 </li>
+<li> 判断区间之间的关系
+<ul>
+<li> 子集 </li>
+<li> 交集 </li>
+<li> 无交集 </li>
+</ul></li>
+<li> 区间合并 </li>
+</ul>
+<p> 实现：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line">vector&lt;PII&gt; segs;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(vector&lt;PII&gt; &amp;segs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vector&lt;PII&gt; res;</span><br><span class="line">    <span class="built_in">sort</span>(segs.<span class="built_in">begin</span>(),segs.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">int</span> st = <span class="number">-2e9</span>,ed = <span class="number">-2e9</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> seg :segs)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(ed &lt; seg.first) <span class="comment">// 情况 1：两个区间无法合并 </span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(st != <span class="number">-2e9</span>) res.<span class="built_in">push_back</span>(&#123;st, ed&#125;);</span><br><span class="line">            st = seg.first, ed = seg.second;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 情况 2：两个区间可以合并，且区间 1 不包含区间 2，区间 2 不包含区间 1</span></span><br><span class="line">       <span class="comment">//(实际上也有情况 3：区间 1 包含区间 2，此时不需要任何操作，可以省略)</span></span><br><span class="line">        <span class="keyword">else</span> ed = <span class="built_in">max</span>(ed, seg.second);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 情况 2：两个区间可以合并，且区间 1 不包含区间 2，区间 2 不包含区间 1</span></span><br><span class="line">    <span class="keyword">if</span>(st != <span class="number">-2e9</span>) res.<span class="built_in">push_back</span>(&#123;st, ed&#125;);</span><br><span class="line">    segs = res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l, r;</span><br><span class="line">        cin &gt;&gt; l &gt;&gt; r;</span><br><span class="line">        segs.<span class="built_in">push_back</span>(&#123;l,r&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">merge</span>(segs);</span><br><span class="line">    cout &lt;&lt; segs.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络 (1)- 计算机网络和 Internet</title>
+    <url>/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/</url>
+    <content><![CDATA[<p>目标：</p>
+<ul>
+<li>了解基本术语与概念</li>
+<li>掌握网络的基本原理</li>
+</ul>
+<span id="more"></span>
+<h2 id="什么是 internet">什么是 Internet</h2>
+<ul>
+<li><p>网：是节点与边组成，与大小、形状无关的拓扑</p></li>
+<li><p>计算机网络：</p>
+<ul>
+<li><p>路由器 ---- 网络层</p>
+<p>交换机 ---- 链路层 ：传输数据 = 带宽(bps)</p></li>
+<li><p>节点：</p>
+<ul>
+<li>设备：
+<ul>
+<li>数据交换节点</li>
+<li>数据节点</li>
+</ul></li>
+<li>应用程序：主机及其运行的应用程序</li>
+</ul></li>
+<li><p>边：链路</p>
+<ul>
+<li>接入网链路：主机连接到互联网的链路</li>
+<li>主干链路：路由器间的链路</li>
+</ul></li>
+<li><p>协议：对等层实体在通信过程中应该遵守的规则和集合</p>
+<p>定义了报文格式和次序，以及在报文传输或接收或其他事件方面所采取的动作</p>
+<p>PDU(协议数据单元)：Protocol Data Unit</p>
+<p><strong>规范了语法、语义、时序和动作</strong></p></li>
+</ul></li>
+<li><p>作用：</p>
+<ul>
+<li><p>为分布式的应用进程提供基础设施，是网络存在的理由</p>
+<p>无连接和面向连接的服务 ---(UDP/TCP)</p></li>
+<li><p>使用通信设施进行通信的分布式应用</p></li>
+</ul></li>
+</ul>
+<h2 id="网络结构">网络结构</h2>
+<ul>
+<li>网络结构：核心通过接入网将任意的网络边缘连接，实现端端互联
+<ul>
+<li>网络边缘：
+<ul>
+<li>主机</li>
+<li>应用程序（客户端和服务器）</li>
+</ul></li>
+<li>网络核心：<strong>数据交换</strong>
+<ul>
+<li>互联着的路由器</li>
+<li>网络中的网络</li>
+</ul></li>
+<li>接入网、物理媒体：<strong>将边缘接入到网络核心</strong>
+<ul>
+<li>有线或无线通信链路</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="网络边缘">网络边缘</h3>
+<ul>
+<li><p>按模式划分为 - 端系统(主机): 网络应用程序的设备</p>
+<ul>
+<li><p>客户 / 服务模式(C/S): 可扩展性差，当到达一定程度后会出现断崖式下降</p></li>
+<li><p>对等模式(peer-peer):</p>
+<p>分布式，文件分发系统使用。既是客户端又是服务器，但服务器的扩容不能满足需求</p></li>
+</ul></li>
+<li><p>采用网络设施的面向连接服务 -- 端系统维持，网络核心不了解</p>
+<ul>
+<li><p>目标：在端系统之间传输数据</p></li>
+<li><p>方式 ---- 握手：在数据传输之前做好准备</p></li>
+<li><p>传输控制协议 ----<strong>TCP</strong></p>
+<ul>
+<li>可靠地、按顺序地传送数据：<strong>确认和重传</strong></li>
+<li>流量控制：发送方不会淹没接收方</li>
+<li>拥塞控制：当网络拥塞时，发送方降低发送速率</li>
+</ul></li>
+</ul></li>
+<li><p>采用基础设施的无连接服务</p>
+<ul>
+<li>目标在端系统之间传输数据</li>
+<li>UDP
+<ul>
+<li>无连接</li>
+</ul></li>
+<li>不可靠</li>
+<li>无流量控制</li>
+<li>无拥塞控制</li>
+</ul></li>
+</ul>
+<h3 id="网络核心 --- 路由器的网状网络">网络核心 --- 路由器的网状网络</h3>
+<ul>
+<li><p>电路交换(线路交换)：</p>
+<p>为每个呼叫预留一条专有电路；端到端的资源被分配给从源端到目标端的呼叫‘call’ 计算机之间的通信有突发性，如过使用线路交换，则浪费的片较多即使这个呼叫没有数据传递，这个片也不能够被别的呼叫使用。</p>
+<ul>
+<li><p>信令系统</p></li>
+<li><p>独享资源：一旦建立起来就能够保证性能</p></li>
+<li><p>如果呼叫没有数据发送，被分配的资源就会被浪费</p></li>
+<li><p>传统电话网络采用</p></li>
+<li><p>特点：</p>
+<ul>
+<li>链路带宽、交换能力</li>
+<li>专用资源：不共享</li>
+<li>保证性能</li>
+<li>要求建立呼叫连接</li>
+</ul></li>
+<li><p>网络资源 (如带宽) 被分成片</p>
+<p>不适合计算机之间的通信</p>
+<ul>
+<li>为呼叫分配片</li>
+<li>如果某个呼叫没有数据，则其资源片处于空闲状态</li>
+<li>将带宽分成片：
+<ol type="1">
+<li>频分 -FDM</li>
+<li>时分 -TDM</li>
+</ol></li>
+</ul></li>
+</ul></li>
+<li><p>分组交换：<strong>存储转发</strong></p>
+<p>发送和接收时一个事物的两个方面 (发送和接收时同时的)，传输延时只能算一遍 ---- 是一个<strong> 过程</strong></p>
+<p>以分组为单位存储 - 转发方式；是突发数据的胜利者</p>
+<ol type="1">
+<li>网络带宽资源不再分分一个个片，传输时使用全部带宽；资源共享，按需使用(packet)</li>
+<li>将要传送的数据分成一个个单位：分组；将分组从一个路由器传到相邻路由器(hop-- 跳), 一段段最终从源端到目标端。
+<ul>
+<li>在转发之前，节点必须收到整个分组</li>
+<li>延迟比线路交换大</li>
+<li>排队时间</li>
+</ul></li>
+<li>每段：采用链路的最大传输能力(带宽)</li>
+<li>时分复用 -- 特殊 统计多路复用</li>
+<li>优缺点：
+<ul>
+<li>适用于突发式数据传输
+<ul>
+<li>简单，不必呼叫</li>
+<li>资源共享</li>
+</ul></li>
+<li>过度使用会造成网络拥塞，分组延时和丢失
+<ul>
+<li>对可靠地数据传输需要协议来约束：拥塞控制</li>
+</ul></li>
+</ul></li>
+</ol>
+<ul>
+<li><p>排队和延迟：共享性的代价</p>
+<ol type="1">
+<li>如果到达速率 &gt; 链路的输出速率：
+<ul>
+<li>分组将会排队，等待传输</li>
+<li>如果路由器的缓存用完了，分组将会被抛弃</li>
+</ul></li>
+</ol></li>
+<li><p>网络核心的关键功能：</p>
+<ul>
+<li>路由 (<strong> 全局选择 </strong>)：查路由表决定分组采用的源到目标的路径 -------<strong> 路由算法</strong></li>
+<li>转发 (<strong> 局部执行</strong>)：将分组从路由器的输入链路转移到输出链路</li>
+</ul></li>
+<li><p>分组交换允许跟多用户使用网络：假设</p>
+<ul>
+<li><p>1Mb/s</p></li>
+<li><p>每个用户活动时 100kb/s，10% 的时间时活动的</p>
+<ul>
+<li><p>35 用户时，&gt;=10 个用户活动的概率为 0.0004</p>
+<figure>
+<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/n 重伯努利模型.png" alt="计算公式"><figcaption aria-hidden="true">计算公式</figcaption>
+</figure></li>
+<li><p>当大于等于 10 时，路由器没有裕量。所以为 9，这样当暂时发生分组排队时，在后来也能及时将数据发出</p></li>
+</ul></li>
+</ul></li>
+<li><p>种类：</p>
+<ol type="1">
+<li>数据报网络(datagram)：Internet
+<ul>
+<li>在通信之前，无须建立其一个连接，有数据就传输</li>
+<li>每一个分组都是独立路由(路径不一样，可能会失序)</li>
+<li>路由器根据分组的目标地址进行路由</li>
+</ul></li>
+<li>虚电路网络(virtual circuit)：X.25 和 ATM
+<ul>
+<li>信令</li>
+</ul></li>
+</ol></li>
+</ul></li>
+<li><p><strong>时延</strong> -- 主机传完不代表客户端能够立马接收到，时间和距离的延迟</p>
+<ol type="1">
+<li>传输时延</li>
+<li>传播时延</li>
+<li>处理时延</li>
+</ol></li>
+</ul>
+<h3 id="接入网和物理媒体">接入网和物理媒体</h3>
+<ul>
+<li><p>接入方式：</p>
+<ul>
+<li>住宅接入网络(Modem): 调制解调器</li>
+</ul>
+<ol type="1">
+<li>调制解调器:
+<ol type="1">
+<li>利用电话线，能保证的带宽只有 4kHz;</li>
+<li>通过 Modem 调制解调可以在 56kHz 范围内使用，且不能与电话同时进行</li>
+<li>DSL 使用 4kHz 以上的带宽进行上网，不影响电话，</li>
+<li>上行 1M；下行 10M 传输速度</li>
+</ol></li>
+<li>有线电视信号线缆双向改造。(FDM/ 共享)
+<ol type="1">
+<li>非对称：最高 30Mbps 的下行，2Mbps 的上行</li>
+<li>线缆和光纤网络将全家庭用户接入到 <strong>ISP</strong> 路由器</li>
+<li>各用户共享到线缆头端的接入网络
+<ul>
+<li>与 DSL 不同，DSL 每个用户一个专用线路到 CO</li>
+</ul></li>
+</ol></li>
+</ol>
+<ul>
+<li><p>单位接入网络</p>
+<ul>
+<li>通过交换机的级联</li>
+</ul></li>
+<li><p>无线接入网络</p>
+<ul>
+<li>无线 LANs:</li>
+<li>广域无线接入</li>
+</ul></li>
+</ul></li>
+<li><p>物理媒</p>
+<ul>
+<li>bit：在传输 - 接收对间传播</li>
+<li>物理介质：在每个传输 - 接收对，跨越一种物理媒体</li>
+<li>导引型：稳定，传的更远。沿着固体媒介
+<ul>
+<li>双绞线(TP)</li>
+<li>同轴电缆</li>
+<li>光缆：多模 / 单模</li>
+</ul></li>
+<li>非导引型：不稳定，易衰减。信号自由传播。双向
+<ul>
+<li>效应：<strong>反射、吸收、干扰</strong></li>
+<li>地面微波</li>
+<li>LAN</li>
+<li>wide area 蜂窝</li>
+<li>卫星</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="internet 结构和 isp">Internet 结构和 ISP</h2>
+<ol type="1">
+<li>端系统通过接入 ISPs 连接到互联网</li>
+<li>接入 ISPs 相应的必须是互联的 -- 因此任何 2 个端系统可相互发送分组到对方</li>
+</ol>
+<ul>
+<li><p>将每两个 ISPs 直接相连不可扩展需要 O(N)连接</p></li>
+<li><p>将每个接入 ISP 都连接到全局 ISP，造成了竞争与合作</p></li>
+<li><p>业务：全球与局域</p></li>
+<li><p>Internet 结构：</p>
+<ol type="1">
+<li><p>松散的层次模型</p></li>
+<li><p>中心：第一层 ISP 国家 / 国际覆盖，速率极高</p>
+<ul>
+<li>直接与其他第一层 ISP 相连</li>
+<li>与大量的第二层 ISP 和其他客户网络相连</li>
+</ul></li>
+<li><p>第二层 ISP：更小些的 ISP</p>
+<ul>
+<li>与一个或多个第一层 ISPs，也可能与其他第二层 ISP</li>
+<li>通过合作覆盖更大的范围</li>
+</ul></li>
+<li><p>一个分组要经过许多网络</p></li>
+</ol></li>
+<li><p>ISP 之间的连接</p>
+<ul>
+<li>POP：高层 ISP 面向客户网络的接入点，涉及费用结算</li>
+<li>对等接入：2 个 ISP 对等互接，不涉及费用结算</li>
+<li>IXP：多个对等 ISP 互联互通之处</li>
+<li>ICP 自己部署专用网络，同时和各级 ISP 连接</li>
+</ul></li>
+</ul>
+<h2 id="分组延时丢失和吞吐量">分组延时、丢失和吞吐量</h2>
+<ul>
+<li><p>造成分组丢失和延时的原因：</p>
+<ul>
+<li>分组到达链路的速率超过了链路输出的能力</li>
+<li>分组等待排到对头、被传输</li>
+</ul></li>
+<li><p>四种分组延时：</p>
+<ol type="1">
+<li><p>节点处理延时</p>
+<ul>
+<li>检查 bit 级差错</li>
+<li>检查分组首部和决定将分组导向何处</li>
+</ul></li>
+<li><p>排队延时</p>
+<ul>
+<li><p>在输出链路上等待传输的时间</p></li>
+<li><p>依赖于路由器的拥塞程度</p></li>
+<li><p>取决于流量强度 I</p>
+<ul>
+<li>a = 分组到达队列的平均速率</li>
+<li>流量强度 = La/R</li>
+<li>La/R ~ 0: 平均排队时延很小</li>
+<li>La/R -&gt; 1: 延时变得很大</li>
+<li>La/R &gt;= 1: 比特到达队列的速率超过了从该队列输出的速率，平均排队延时将趋向无穷大, 会丢包 <strong>注意: 设计系统时流量强度不能大于 1</strong></li>
+<li>TTL(Time to live): 生存时间，过一个路由器减一，为 0 返回原主机。在 ICMP 协议规定。</li>
+</ul></li>
+</ul></li>
+<li><p>传输延时</p>
+<ul>
+<li>R = 链路带宽(bps)</li>
+<li>L = 分组长度(bits)</li>
+<li>将分组发送到链路上的时间 = L/R</li>
+<li>存储转发延时</li>
+</ul></li>
+<li><p>传播延时</p>
+<ul>
+<li>d = 物理链路的长度</li>
+<li>s = 在媒体上的传播速度(~$ 2 ^8 m/sec$)</li>
+<li>传播时延 = d/s</li>
+</ul></li>
+<li><p>节点延时：</p>
+<ul>
+<li>节点延时计算: <span class="math inline">\(d_{nodal} = d_{proc} + d_{queue} + d_{trans} + d_{prop}\)</span> <span class="math display">\[\begin{align}
+ &amp;d_{proc} = 处理延时  \qquad  通常是微秒数量级或更少
+ \\
+ &amp;d_{queue} = 排队延时  \qquad 取决于拥塞程度
+ \\
+ &amp;d_{trans} = 传输延时 =L/R，对低速率的链路而言很大(如拨号)，通常为微秒级到毫秒级
+ \\
+ &amp;d_{prop} = 传播时延 \qquad 几微秒到几百毫秒 \\
+ \end{align}
+ \]</span></li>
+</ul></li>
+</ol></li>
+<li><p>分组丢失：</p>
+<ul>
+<li><p>链路的队列缓冲区容量有限</p></li>
+<li><p>当分组到达一个满的队列时，该分组将会丢失</p></li>
+<li><p>丢失的分组可能会被前一个节点或源端系统重传，或根本不重传</p></li>
+</ul></li>
+<li><p>吞吐量：</p>
+<ul>
+<li><p>在源端和目标端之间传输的速率(数据量 / 单位时间)</p>
+<ul>
+<li>瞬间吞吐量：一个时间点的速率</li>
+<li>平均吞吐量：一个长时间内的平均值</li>
+<li>瓶颈链路：端到端路径上，限制端到端吞吐的链路</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="协议层次及服务模型">协议层次及服务模型</h2>
+<ul>
+<li><p>协议层次：</p>
+<ul>
+<li><p>网络是一个复杂的系统：<strong>模块化</strong></p>
+<ol type="1">
+<li>网络功能繁杂</li>
+<li>构成元素多</li>
+<li>使用分层的方式来解决复杂的网络设计与实现
+<ul>
+<li><p>将网络功能分层，<strong>功能 </strong> 明确，<strong>层次 </strong> 清晰，可以给上层提供 <strong> 服务</strong></p></li>
+<li><p>本层协议实体相互执行交互执行本层的 <strong> 协议动作</strong>，目的时实现本层功能，通过接口为上层提供服务</p></li>
+<li><p>在实现本层本层的协议的时候，直接利用了下层所提供的服务</p></li>
+</ul></li>
+</ol></li>
+<li><p>服务与服务访问点</p>
+<ul>
+<li><p>服务(Service)：低层实体想上层实体提供它们之间的通信能力</p>
+<ul>
+<li>服务用户</li>
+<li>服务提供者</li>
+</ul></li>
+<li><p>原语 (primitive)：上层使用下层服务的形式，高层使用低层提供的服务，以及低层向高层提供服务都是通过服务访问原语来进行交互 --<strong> 形式(API)</strong></p></li>
+<li><p>服务访问点 SAP(Services Access Point)：上层使用下层提供的服务通过层间的接口 -- 地点</p>
+<ul>
+<li>例子：邮箱</li>
+<li>地址(ip address): 下层的一个实体支撑着上层的多个实体，SAP 有标志不同上层实体的作用</li>
+<li>可以有不同的实现，队列</li>
+<li>例子：传输层的 SAP：端口(port)</li>
+</ul></li>
+<li><p>服务的类型</p>
+<ul>
+<li><p>面向连接的服务和无连接的服务 - 方式</p>
+<ul>
+<li><p>面向连接的服务</p>
+<ol type="1">
+<li><p>连接(connection): 两个同信实体为进行通信而建立的一种结合</p></li>
+<li><p>通信过程：建立连接，通信，拆除连接</p></li>
+<li><p>例子：网络层的连接被称为虚电路</p></li>
+<li><p>适用范围：对于大的数据块要传输；不适合小的零星报文</p></li>
+<li><p>特点：保序</p></li>
+<li><p>服务类型：</p>
+<ul>
+<li>可靠的信息流 -- 传送页面(可靠的获得，通过接收方的确认)</li>
+<li>可靠的字节流 -- 远程登陆</li>
+<li>不可靠的连接 -- 数字化声音</li>
+</ul></li>
+</ol></li>
+<li><p>无连接的服务：</p>
+<ol type="1">
+<li><p>无连接的服务：两个对等层实体在通信前不需要建立一个连接，不预留资源；不需要通信双方都是活跃(如寄信)</p></li>
+<li><p>特点：不可靠、可能重复、可能失序</p></li>
+<li><p>IP 分组，数据包</p></li>
+<li><p>使用范围：适合传送零星数据</p></li>
+<li><p>服务类型：</p>
+<ul>
+<li>不可靠的数据报 -- 电子方式的函件</li>
+<li>有确认的数据报 -- 挂号信</li>
+<li>请求回答 -- 信息查询</li>
+</ul></li>
+</ol></li>
+</ul></li>
+</ul></li>
+<li><p>服务和协议</p>
+<ul>
+<li><p>区别：</p>
+<ul>
+<li>服务 (Service)：低层实体向上层实体提供它们之间的通信的能力，是通过原语(Primitive) 来操作的，垂直。</li>
+<li>协议 (Protocal): 对等层实体(peer entity) 之间在相互通信的过程中，需要遵循的规则的集合，水平。</li>
+</ul></li>
+<li><p>联系</p>
+<ul>
+<li>本层 <strong> 协议的实现 </strong> 要靠下层提供的服务来实现</li>
+<li>本层实体通过协议为上层提供 <strong> 更高级的服务</strong></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p>数据单元(DU)</p>
+<figure>
+<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/ 数据单元.png" alt="数据单元"><figcaption aria-hidden="true">数据单元</figcaption>
+</figure>
+<ul>
+<li><p>各层次的协议数据单元(PDU):</p>
+<ol type="1">
+<li>应用层：报文(message)</li>
+<li>传输层：报文段(segment) -- TCP 段，UDP 数据报</li>
+<li>网络层：分组 packet(如果无连接方式：数据报 datagram)</li>
+<li>数据链路层：帧(frame)</li>
+<li>物理层：位(bit)</li>
+</ol></li>
+</ul></li>
+<li><p>分层处理和实现复杂系统</p>
+<ul>
+<li><p>概念化：结构清晰，便于标识网络组件，以及描述其相互关系</p></li>
+<li><p>结构化：模块化更易于维护和系统升级</p>
+<ul>
+<li><p>改变某一层服务的实现不影响系统中的其他层次</p>
+<ul>
+<li>对于其他层次而言是透明的</li>
+</ul></li>
+</ul></li>
+<li><p>效率变低</p></li>
+</ul></li>
+<li><p>Internet 协议栈 -- 数据的封装与解封装过程</p>
+<ul>
+<li><p>应用层：网络应用</p>
+<ul>
+<li>为人类用户或者其他应用进程提供网络应用服务</li>
+<li>FTP，SMTP，HTTP，DNS</li>
+</ul></li>
+<li><p>传输层：主机之间的数据传输</p>
+<ul>
+<li>在网络层提供的端到端通信基础上，细分为进程到进程，将不可靠的通信变成可靠地通信</li>
+<li>TCP,UDP</li>
+</ul></li>
+<li><p>网络层：为数据报从源目的选择路由</p>
+<ul>
+<li>主机主机之间的通信，端到端通信，不可靠</li>
+<li>IP，路由协议</li>
+</ul></li>
+<li><p>链路层：相连网络节点之间的数据传输</p>
+<ul>
+<li>2 个相邻 2 点的通信，点到点通信，可靠或不可靠</li>
+<li>点对点协议 PPP，802.11(wifi),Ethernet</li>
+</ul></li>
+<li><p>物理层：在线路上传送 bit</p></li>
+</ul></li>
+<li><p>ISO/OSI 参考模型 -- 在上述协议栈的应用层和传输层多了两层</p>
+<ul>
+<li>表示层：允许应用解释传输的数据，e.g., 加密，压缩，机器相关的表示转换</li>
+<li>会话层：数据交换的同步，检查点，恢复。</li>
+<li>在协议栈中是应用层中去处理</li>
+</ul></li>
+</ul></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
   <entry>
@@ -2132,7 +2682,7 @@ return 0;</code></pre>
 </ul></li>
 <li>多媒体扩展： MIME</li>
 </ul></li>
-<li>邮件访问协议 <img src="/2022/01/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(2)-%E5%BA%94%E7%94%A8%E5%B1%82/ 计算机网络(2)- 应用层 /1659011724553.png" title="邮件访问协议" alt="邮件访问协议"></li>
+<li>邮件访问协议 <img src="/2022/01/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(2)-%E5%BA%94%E7%94%A8%E5%B1%82/ 邮件访问协议.png" title="邮件访问协议" alt="邮件访问协议"></li>
 </ul>
 <h3 id="pop3">POP3</h3>
 <ul>
@@ -2189,64 +2739,6 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>离散化</title>
-    <url>/2021/08/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(8)--%E7%A6%BB%E6%95%A3%E5%8C%96/</url>
-    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
-<p>​ 特指整数有序的离散化 </p>
-<p> 假定有一个无限长的数轴，数轴上每个坐标上的数都是 0。</p>
-<p> 现在，我们首先进行 n 次操作，每次操作将某一位置 x 上的数加 c。</p>
-<p> 接下来，进行 m 次询问，每个询问包含两个整数 l 和 r，你需要求出在区间 [l,r] 之间的所有数的和。</p>
-<span id="more"></span>
-<h2 id="离散化"> 离散化 </h2>
-<ul>
-<li> 含义：把无限空间中有限的个体映射到有限的空间中去 </li>
-<li> 目标：在不改变数据相对大小的条件下，对数据进行相应的缩小 </li>
-<li> 注意：
-<ul>
-<li> 有重复元素需要去重。</li>
-<li> 如何去算离散化后的值 ---- 二分 </li>
-</ul></li>
-</ul>
-<hr>
-<p> 假定有一个无限长的数轴，数轴上每个坐标上的数都是 0。</p>
-<p> 现在，我们首先进行 n 次操作，每次操作将某一位置 x 上的数加 c。</p>
-<p> 接下来，进行 m 次询问，每个询问包含两个整数 l 和 r，你需要求出在区间 [l,r] 之间的所有数的和 </p>
-<hr>
-<p> 实现：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII; </span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">300010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> a[N],s[N];</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; alls;</span><br><span class="line">vector&lt;PII&gt;add,query;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = alls.<span class="built_in">size</span>()<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(alls[mid] &gt;= x) r = mid;</span><br><span class="line">        <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt;::<span class="function">iterator <span class="title">unique</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt; &amp;a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a.<span class="built_in">size</span>(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(!i || a[i] != a[i<span class="number">-1</span>])</span><br><span class="line">          a[j++] = a[i];</span><br><span class="line">        <span class="comment">//a[0] ~ a[j-1] 所有 a 中不重复的数 </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a.<span class="built_in">begin</span>() + j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span>  i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> x,c;</span><br><span class="line">        cin &gt;&gt; x &gt;&gt; c;</span><br><span class="line">        add.<span class="built_in">push_back</span>(&#123;x, c&#125;);</span><br><span class="line">        alls.<span class="built_in">push_back</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l,r;</span><br><span class="line">        cin &gt;&gt; l &gt;&gt; r;</span><br><span class="line">        query.<span class="built_in">push_back</span>(&#123;l,r&#125;);</span><br><span class="line">        alls.<span class="built_in">push_back</span>(l);</span><br><span class="line">        alls.<span class="built_in">push_back</span>(r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 去重 </span></span><br><span class="line">    <span class="built_in">sort</span>(alls.<span class="built_in">begin</span>(),alls.<span class="built_in">end</span>());</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 使用 stl  alls.erase(unique(alls.begin(),alls.end()),alls.end());</span></span><br><span class="line">    <span class="comment">// 使用自己编写的 </span></span><br><span class="line">    <span class="comment">// 处理插入 unique</span></span><br><span class="line">    alls.<span class="built_in">erase</span>(<span class="built_in">unique</span>(alls),alls.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> item : add)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> x = <span class="built_in">find</span>(item.first);</span><br><span class="line">        a[x] += item.second;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 预处理前缀和 </span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= alls.<span class="built_in">size</span>(); i++) s[i] = s[i <span class="number">-1</span>] + a[i];</span><br><span class="line">    <span class="comment">// 处理查询 </span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> item : query)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="built_in">find</span>(item.first), r = <span class="built_in">find</span>(item.second);</span><br><span class="line">        cout &lt;&lt; s[r] - s[l<span class="number">-1</span>] &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>区间合并</title>
-    <url>/2021/08/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(9)--%E5%8C%BA%E9%97%B4%E5%90%88%E5%B9%B6/</url>
-    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
-<p> 给定 n 个区间 [l,r]，要求合并所有有交集的区间。</p>
-<p> 注意如果在端点处相交，也算有交集。</p>
-<p> 输出合并完成后的区间个数。</p>
-<p> 例如：[1,3] 和 [2,6] 可以合并为一个区间 [1,6]。</p>
-<span id="more"></span>
-<h2 id="区间合并"> 区间合并 </h2>
-<ul>
-<li> 按区间左端点排序 </li>
-<li> 判断区间之间的关系
-<ul>
-<li> 子集 </li>
-<li> 交集 </li>
-<li> 无交集 </li>
-</ul></li>
-<li> 区间合并 </li>
-</ul>
-<p> 实现：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line">vector&lt;PII&gt; segs;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(vector&lt;PII&gt; &amp;segs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vector&lt;PII&gt; res;</span><br><span class="line">    <span class="built_in">sort</span>(segs.<span class="built_in">begin</span>(),segs.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">int</span> st = <span class="number">-2e9</span>,ed = <span class="number">-2e9</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> seg :segs)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(ed &lt; seg.first) <span class="comment">// 情况 1：两个区间无法合并 </span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(st != <span class="number">-2e9</span>) res.<span class="built_in">push_back</span>(&#123;st, ed&#125;);</span><br><span class="line">            st = seg.first, ed = seg.second;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 情况 2：两个区间可以合并，且区间 1 不包含区间 2，区间 2 不包含区间 1</span></span><br><span class="line">       <span class="comment">//(实际上也有情况 3：区间 1 包含区间 2，此时不需要任何操作，可以省略)</span></span><br><span class="line">        <span class="keyword">else</span> ed = <span class="built_in">max</span>(ed, seg.second);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 情况 2：两个区间可以合并，且区间 1 不包含区间 2，区间 2 不包含区间 1</span></span><br><span class="line">    <span class="keyword">if</span>(st != <span class="number">-2e9</span>) res.<span class="built_in">push_back</span>(&#123;st, ed&#125;);</span><br><span class="line">    segs = res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l, r;</span><br><span class="line">        cin &gt;&gt; l &gt;&gt; r;</span><br><span class="line">        segs.<span class="built_in">push_back</span>(&#123;l,r&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">merge</span>(segs);</span><br><span class="line">    cout &lt;&lt; segs.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>配置 SDL 第三方库</title>
     <url>/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/</url>
     <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
@@ -2263,7 +2755,7 @@ return 0;</code></pre>
 <p><img src="/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/SDL 下载.png" style="zoom:75%;"></p>
 <p>​ 根据自己的编译器选择。</p>
 <p>​ 下载完成后根据自己使用的是 64 位还是 32 位 MinGW 选择文件夹复制粘贴到 MinGW 文件夹中里面。我是 64 位 MinGW。所以在这里我选择 x86 的文件夹并复制粘贴。</p>
-<p><img src="/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/选择 SDL 库文件夹.jpg" alt="选择 SDL 库文件夹" style="zoom:50%;"></p>
+<p><img src="/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/ 选择 SDL 库文件夹.jpg" alt="选择 SDL 库文件夹" style="zoom:50%;"></p>
 <p><img src="/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/MinGW 文件夹选择.png" alt="MinGW 文件夹选择" style="zoom:50%;"></p>
 <h2 id="配置 vscode"> 配置 VScode</h2>
 <p>​ 要在 c_cpp_properties.json 中输入路径。</p>
@@ -2272,498 +2764,6 @@ return 0;</code></pre>
 ]]></content>
       <tags>
         <tag>C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>计算机网络 (1)- 计算机网络和 Internet</title>
-    <url>/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/</url>
-    <content><![CDATA[<p>目标：</p>
-<ul>
-<li>了解基本术语与概念</li>
-<li>掌握网络的基本原理</li>
-</ul>
-<span id="more"></span>
-<h2 id="什么是 internet">什么是 Internet</h2>
-<ul>
-<li><p>网：是节点与边组成，与大小、形状无关的拓扑</p></li>
-<li><p>计算机网络：</p>
-<ul>
-<li><p>路由器 ---- 网络层</p>
-<p>交换机 ---- 链路层 ：传输数据 = 带宽(bps)</p></li>
-<li><p>节点：</p>
-<ul>
-<li>设备：
-<ul>
-<li>数据交换节点</li>
-<li>数据节点</li>
-</ul></li>
-<li>应用程序：主机及其运行的应用程序</li>
-</ul></li>
-<li><p>边：链路</p>
-<ul>
-<li>接入网链路：主机连接到互联网的链路</li>
-<li>主干链路：路由器间的链路</li>
-</ul></li>
-<li><p>协议：对等层实体在通信过程中应该遵守的规则和集合</p>
-<p>定义了报文格式和次序，以及在报文传输或接收或其他事件方面所采取的动作</p>
-<p>PDU(协议数据单元)：Protocol Data Unit</p>
-<p><strong>规范了语法、语义、时序和动作</strong></p></li>
-</ul></li>
-<li><p>作用：</p>
-<ul>
-<li><p>为分布式的应用进程提供基础设施，是网络存在的理由</p>
-<p>无连接和面向连接的服务 ---(UDP/TCP)</p></li>
-<li><p>使用通信设施进行通信的分布式应用</p></li>
-</ul></li>
-</ul>
-<h2 id="网络结构">网络结构</h2>
-<ul>
-<li>网络结构：核心通过接入网将任意的网络边缘连接，实现端端互联
-<ul>
-<li>网络边缘：
-<ul>
-<li>主机</li>
-<li>应用程序（客户端和服务器）</li>
-</ul></li>
-<li>网络核心：<strong>数据交换</strong>
-<ul>
-<li>互联着的路由器</li>
-<li>网络中的网络</li>
-</ul></li>
-<li>接入网、物理媒体：<strong>将边缘接入到网络核心</strong>
-<ul>
-<li>有线或无线通信链路</li>
-</ul></li>
-</ul></li>
-</ul>
-<h3 id="网络边缘">网络边缘</h3>
-<ul>
-<li><p>按模式划分为 - 端系统(主机): 网络应用程序的设备</p>
-<ul>
-<li><p>客户 / 服务模式(C/S): 可扩展性差，当到达一定程度后会出现断崖式下降</p></li>
-<li><p>对等模式(peer-peer):</p>
-<p>分布式，文件分发系统使用。既是客户端又是服务器，但服务器的扩容不能满足需求</p></li>
-</ul></li>
-<li><p>采用网络设施的面向连接服务 -- 端系统维持，网络核心不了解</p>
-<ul>
-<li><p>目标：在端系统之间传输数据</p></li>
-<li><p>方式 ---- 握手：在数据传输之前做好准备</p></li>
-<li><p>传输控制协议 ----<strong>TCP</strong></p>
-<ul>
-<li>可靠地、按顺序地传送数据：<strong>确认和重传</strong></li>
-<li>流量控制：发送方不会淹没接收方</li>
-<li>拥塞控制：当网络拥塞时，发送方降低发送速率</li>
-</ul></li>
-</ul></li>
-<li><p>采用基础设施的无连接服务</p>
-<ul>
-<li>目标在端系统之间传输数据</li>
-<li>UDP
-<ul>
-<li>无连接</li>
-</ul></li>
-<li>不可靠</li>
-<li>无流量控制</li>
-<li>无拥塞控制</li>
-</ul></li>
-</ul>
-<h3 id="网络核心 --- 路由器的网状网络">网络核心 --- 路由器的网状网络</h3>
-<ul>
-<li><p>电路交换(线路交换)：</p>
-<p>为每个呼叫预留一条专有电路；端到端的资源被分配给从源端到目标端的呼叫‘call’ 计算机之间的通信有突发性，如过使用线路交换，则浪费的片较多即使这个呼叫没有数据传递，这个片也不能够被别的呼叫使用。</p>
-<ul>
-<li><p>信令系统</p></li>
-<li><p>独享资源：一旦建立起来就能够保证性能</p></li>
-<li><p>如果呼叫没有数据发送，被分配的资源就会被浪费</p></li>
-<li><p>传统电话网络采用</p></li>
-<li><p>特点：</p>
-<ul>
-<li>链路带宽、交换能力</li>
-<li>专用资源：不共享</li>
-<li>保证性能</li>
-<li>要求建立呼叫连接</li>
-</ul></li>
-<li><p>网络资源 (如带宽) 被分成片</p>
-<p>不适合计算机之间的通信</p>
-<ul>
-<li>为呼叫分配片</li>
-<li>如果某个呼叫没有数据，则其资源片处于空闲状态</li>
-<li>将带宽分成片：
-<ol type="1">
-<li>频分 -FDM</li>
-<li>时分 -TDM</li>
-</ol></li>
-</ul></li>
-</ul></li>
-<li><p>分组交换：<strong>存储转发</strong></p>
-<p>发送和接收时一个事物的两个方面 (发送和接收时同时的)，传输延时只能算一遍 ---- 是一个<strong> 过程</strong></p>
-<p>以分组为单位存储 - 转发方式；是突发数据的胜利者</p>
-<ol type="1">
-<li>网络带宽资源不再分分一个个片，传输时使用全部带宽；资源共享，按需使用(packet)</li>
-<li>将要传送的数据分成一个个单位：分组；将分组从一个路由器传到相邻路由器(hop-- 跳), 一段段最终从源端到目标端。
-<ul>
-<li>在转发之前，节点必须收到整个分组</li>
-<li>延迟比线路交换大</li>
-<li>排队时间</li>
-</ul></li>
-<li>每段：采用链路的最大传输能力(带宽)</li>
-<li>时分复用 -- 特殊 统计多路复用</li>
-<li>优缺点：
-<ul>
-<li>适用于突发式数据传输
-<ul>
-<li>简单，不必呼叫</li>
-<li>资源共享</li>
-</ul></li>
-<li>过度使用会造成网络拥塞，分组延时和丢失
-<ul>
-<li>对可靠地数据传输需要协议来约束：拥塞控制</li>
-</ul></li>
-</ul></li>
-</ol>
-<ul>
-<li><p>排队和延迟：共享性的代价</p>
-<ol type="1">
-<li>如果到达速率 &gt; 链路的输出速率：
-<ul>
-<li>分组将会排队，等待传输</li>
-<li>如果路由器的缓存用完了，分组将会被抛弃</li>
-</ul></li>
-</ol></li>
-<li><p>网络核心的关键功能：</p>
-<ul>
-<li>路由 (<strong> 全局选择 </strong>)：查路由表决定分组采用的源到目标的路径 -------<strong> 路由算法</strong></li>
-<li>转发 (<strong> 局部执行</strong>)：将分组从路由器的输入链路转移到输出链路</li>
-</ul></li>
-<li><p>分组交换允许跟多用户使用网络：假设</p>
-<ul>
-<li><p>1Mb/s</p></li>
-<li><p>每个用户活动时 100kb/s，10% 的时间时活动的</p>
-<ul>
-<li><p>35 用户时，&gt;=10 个用户活动的概率为 0.0004</p>
-<figure>
-<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/n 重伯努利模型.png" alt="计算公式"><figcaption aria-hidden="true">计算公式</figcaption>
-</figure></li>
-<li><p>当大于等于 10 时，路由器没有裕量。所以为 9，这样当暂时发生分组排队时，在后来也能及时将数据发出</p></li>
-</ul></li>
-</ul></li>
-<li><p>种类：</p>
-<ol type="1">
-<li>数据报网络(datagram)：Internet
-<ul>
-<li>在通信之前，无须建立其一个连接，有数据就传输</li>
-<li>每一个分组都是独立路由(路径不一样，可能会失序)</li>
-<li>路由器根据分组的目标地址进行路由</li>
-</ul></li>
-<li>虚电路网络(virtual circuit)：X.25 和 ATM
-<ul>
-<li>信令</li>
-</ul></li>
-</ol></li>
-</ul></li>
-<li><p><strong>时延</strong> -- 主机传完不代表客户端能够立马接收到，时间和距离的延迟</p>
-<ol type="1">
-<li>传输时延</li>
-<li>传播时延</li>
-<li>处理时延</li>
-</ol></li>
-</ul>
-<h3 id="接入网和物理媒体">接入网和物理媒体</h3>
-<ul>
-<li><p>接入方式：</p>
-<ul>
-<li>住宅接入网络(Modem): 调制解调器</li>
-</ul>
-<ol type="1">
-<li>调制解调器:
-<ol type="1">
-<li>利用电话线，能保证的带宽只有 4kHz;</li>
-<li>通过 Modem 调制解调可以在 56kHz 范围内使用，且不能与电话同时进行</li>
-<li>DSL 使用 4kHz 以上的带宽进行上网，不影响电话，</li>
-<li>上行 1M；下行 10M 传输速度</li>
-</ol></li>
-<li>有线电视信号线缆双向改造。(FDM/ 共享)
-<ol type="1">
-<li>非对称：最高 30Mbps 的下行，2Mbps 的上行</li>
-<li>线缆和光纤网络将全家庭用户接入到 <strong>ISP</strong> 路由器</li>
-<li>各用户共享到线缆头端的接入网络
-<ul>
-<li>与 DSL 不同，DSL 每个用户一个专用线路到 CO</li>
-</ul></li>
-</ol></li>
-</ol>
-<ul>
-<li><p>单位接入网络</p>
-<ul>
-<li>通过交换机的级联</li>
-</ul></li>
-<li><p>无线接入网络</p>
-<ul>
-<li>无线 LANs:</li>
-<li>广域无线接入</li>
-</ul></li>
-</ul></li>
-<li><p>物理媒</p>
-<ul>
-<li>bit：在传输 - 接收对间传播</li>
-<li>物理介质：在每个传输 - 接收对，跨越一种物理媒体</li>
-<li>导引型：稳定，传的更远。沿着固体媒介
-<ul>
-<li>双绞线(TP)</li>
-<li>同轴电缆</li>
-<li>光缆：多模 / 单模</li>
-</ul></li>
-<li>非导引型：不稳定，易衰减。信号自由传播。双向
-<ul>
-<li>效应：<strong>反射、吸收、干扰</strong></li>
-<li>地面微波</li>
-<li>LAN</li>
-<li>wide area 蜂窝</li>
-<li>卫星</li>
-</ul></li>
-</ul></li>
-</ul>
-<h2 id="internet 结构和 isp">Internet 结构和 ISP</h2>
-<ol type="1">
-<li>端系统通过接入 ISPs 连接到互联网</li>
-<li>接入 ISPs 相应的必须是互联的 -- 因此任何 2 个端系统可相互发送分组到对方</li>
-</ol>
-<ul>
-<li><p>将每两个 ISPs 直接相连不可扩展需要 O(N)连接</p></li>
-<li><p>将每个接入 ISP 都连接到全局 ISP，造成了竞争与合作</p></li>
-<li><p>业务：全球与局域</p></li>
-<li><p>Internet 结构：</p>
-<ol type="1">
-<li><p>松散的层次模型</p></li>
-<li><p>中心：第一层 ISP 国家 / 国际覆盖，速率极高</p>
-<ul>
-<li>直接与其他第一层 ISP 相连</li>
-<li>与大量的第二层 ISP 和其他客户网络相连</li>
-</ul></li>
-<li><p>第二层 ISP：更小些的 ISP</p>
-<ul>
-<li>与一个或多个第一层 ISPs，也可能与其他第二层 ISP</li>
-<li>通过合作覆盖更大的范围</li>
-</ul></li>
-<li><p>一个分组要经过许多网络</p></li>
-</ol></li>
-<li><p>ISP 之间的连接</p>
-<ul>
-<li>POP：高层 ISP 面向客户网络的接入点，涉及费用结算</li>
-<li>对等接入：2 个 ISP 对等互接，不涉及费用结算</li>
-<li>IXP：多个对等 ISP 互联互通之处</li>
-<li>ICP 自己部署专用网络，同时和各级 ISP 连接</li>
-</ul></li>
-</ul>
-<h2 id="分组延时丢失和吞吐量">分组延时、丢失和吞吐量</h2>
-<ul>
-<li><p>造成分组丢失和延时的原因：</p>
-<ul>
-<li>分组到达链路的速率超过了链路输出的能力</li>
-<li>分组等待排到对头、被传输</li>
-</ul></li>
-<li><p>四种分组延时：</p>
-<ol type="1">
-<li><p>节点处理延时</p>
-<ul>
-<li>检查 bit 级差错</li>
-<li>检查分组首部和决定将分组导向何处</li>
-</ul></li>
-<li><p>排队延时</p>
-<ul>
-<li><p>在输出链路上等待传输的时间</p></li>
-<li><p>依赖于路由器的拥塞程度</p></li>
-<li><p>取决于流量强度 I</p>
-<ul>
-<li>a = 分组到达队列的平均速率</li>
-<li>流量强度 = La/R</li>
-<li>La/R ~ 0: 平均排队时延很小</li>
-<li>La/R -&gt; 1: 延时变得很大</li>
-<li>La/R &gt;= 1: 比特到达队列的速率超过了从该队列输出的速率，平均排队延时将趋向无穷大, 会丢包 <strong>注意: 设计系统时流量强度不能大于 1</strong></li>
-<li>TTL(Time to live): 生存时间，过一个路由器减一，为 0 返回原主机。在 ICMP 协议规定。</li>
-</ul></li>
-</ul></li>
-<li><p>传输延时</p>
-<ul>
-<li>R = 链路带宽(bps)</li>
-<li>L = 分组长度(bits)</li>
-<li>将分组发送到链路上的时间 = L/R</li>
-<li>存储转发延时</li>
-</ul></li>
-<li><p>传播延时</p>
-<ul>
-<li>d = 物理链路的长度</li>
-<li>s = 在媒体上的传播速度(~$ 2 ^8 m/sec$)</li>
-<li>传播时延 = d/s</li>
-</ul></li>
-<li><p>节点延时：</p>
-<ul>
-<li>节点延时计算: <span class="math inline">\(d_{nodal} = d_{proc} + d_{queue} + d_{trans} + d_{prop}\)</span> <span class="math display">\[\begin{align}
- &amp;d_{proc} = 处理延时  \qquad  通常是微秒数量级或更少
- \\
- &amp;d_{queue} = 排队延时  \qquad 取决于拥塞程度
- \\
- &amp;d_{trans} = 传输延时 =L/R，对低速率的链路而言很大(如拨号)，通常为微秒级到毫秒级
- \\
- &amp;d_{prop} = 传播时延 \qquad 几微秒到几百毫秒 \\
- \end{align}
- \]</span></li>
-</ul></li>
-</ol></li>
-<li><p>分组丢失：</p>
-<ul>
-<li><p>链路的队列缓冲区容量有限</p></li>
-<li><p>当分组到达一个满的队列时，该分组将会丢失</p></li>
-<li><p>丢失的分组可能会被前一个节点或源端系统重传，或根本不重传</p></li>
-</ul></li>
-<li><p>吞吐量：</p>
-<ul>
-<li><p>在源端和目标端之间传输的速率(数据量 / 单位时间)</p>
-<ul>
-<li>瞬间吞吐量：一个时间点的速率</li>
-<li>平均吞吐量：一个长时间内的平均值</li>
-<li>瓶颈链路：端到端路径上，限制端到端吞吐的链路</li>
-</ul></li>
-</ul></li>
-</ul>
-<h2 id="协议层次及服务模型">协议层次及服务模型</h2>
-<ul>
-<li><p>协议层次：</p>
-<ul>
-<li><p>网络是一个复杂的系统：<strong>模块化</strong></p>
-<ol type="1">
-<li>网络功能繁杂</li>
-<li>构成元素多</li>
-<li>使用分层的方式来解决复杂的网络设计与实现
-<ul>
-<li><p>将网络功能分层，<strong>功能 </strong> 明确，<strong>层次 </strong> 清晰，可以给上层提供 <strong> 服务</strong></p></li>
-<li><p>本层协议实体相互执行交互执行本层的 <strong> 协议动作</strong>，目的时实现本层功能，通过接口为上层提供服务</p></li>
-<li><p>在实现本层本层的协议的时候，直接利用了下层所提供的服务</p></li>
-</ul></li>
-</ol></li>
-<li><p>服务与服务访问点</p>
-<ul>
-<li><p>服务(Service)：低层实体想上层实体提供它们之间的通信能力</p>
-<ul>
-<li>服务用户</li>
-<li>服务提供者</li>
-</ul></li>
-<li><p>原语 (primitive)：上层使用下层服务的形式，高层使用低层提供的服务，以及低层向高层提供服务都是通过服务访问原语来进行交互 --<strong> 形式(API)</strong></p></li>
-<li><p>服务访问点 SAP(Services Access Point)：上层使用下层提供的服务通过层间的接口 -- 地点</p>
-<ul>
-<li>例子：邮箱</li>
-<li>地址(ip address): 下层的一个实体支撑着上层的多个实体，SAP 有标志不同上层实体的作用</li>
-<li>可以有不同的实现，队列</li>
-<li>例子：传输层的 SAP：端口(port)</li>
-</ul></li>
-<li><p>服务的类型</p>
-<ul>
-<li><p>面向连接的服务和无连接的服务 - 方式</p>
-<ul>
-<li><p>面向连接的服务</p>
-<ol type="1">
-<li><p>连接(connection): 两个同信实体为进行通信而建立的一种结合</p></li>
-<li><p>通信过程：建立连接，通信，拆除连接</p></li>
-<li><p>例子：网络层的连接被称为虚电路</p></li>
-<li><p>适用范围：对于大的数据块要传输；不适合小的零星报文</p></li>
-<li><p>特点：保序</p></li>
-<li><p>服务类型：</p>
-<ul>
-<li>可靠的信息流 -- 传送页面(可靠的获得，通过接收方的确认)</li>
-<li>可靠的字节流 -- 远程登陆</li>
-<li>不可靠的连接 -- 数字化声音</li>
-</ul></li>
-</ol></li>
-<li><p>无连接的服务：</p>
-<ol type="1">
-<li><p>无连接的服务：两个对等层实体在通信前不需要建立一个连接，不预留资源；不需要通信双方都是活跃(如寄信)</p></li>
-<li><p>特点：不可靠、可能重复、可能失序</p></li>
-<li><p>IP 分组，数据包</p></li>
-<li><p>使用范围：适合传送零星数据</p></li>
-<li><p>服务类型：</p>
-<ul>
-<li>不可靠的数据报 -- 电子方式的函件</li>
-<li>有确认的数据报 -- 挂号信</li>
-<li>请求回答 -- 信息查询</li>
-</ul></li>
-</ol></li>
-</ul></li>
-</ul></li>
-<li><p>服务和协议</p>
-<ul>
-<li><p>区别：</p>
-<ul>
-<li>服务 (Service)：低层实体向上层实体提供它们之间的通信的能力，是通过原语(Primitive) 来操作的，垂直。</li>
-<li>协议 (Protocal): 对等层实体(peer entity) 之间在相互通信的过程中，需要遵循的规则的集合，水平。</li>
-</ul></li>
-<li><p>联系</p>
-<ul>
-<li>本层 <strong> 协议的实现 </strong> 要靠下层提供的服务来实现</li>
-<li>本层实体通过协议为上层提供 <strong> 更高级的服务</strong></li>
-</ul></li>
-</ul></li>
-</ul></li>
-<li><p>数据单元(DU)</p>
-<figure>
-<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/数据单元.png" alt="数据单元"><figcaption aria-hidden="true">数据单元</figcaption>
-</figure>
-<ul>
-<li><p>各层次的协议数据单元(PDU):</p>
-<ol type="1">
-<li>应用层：报文(message)</li>
-<li>传输层：报文段(segment) -- TCP 段，UDP 数据报</li>
-<li>网络层：分组 packet(如果无连接方式：数据报 datagram)</li>
-<li>数据链路层：帧(frame)</li>
-<li>物理层：位(bit)</li>
-</ol></li>
-</ul></li>
-<li><p>分层处理和实现复杂系统</p>
-<ul>
-<li><p>概念化：结构清晰，便于标识网络组件，以及描述其相互关系</p></li>
-<li><p>结构化：模块化更易于维护和系统升级</p>
-<ul>
-<li><p>改变某一层服务的实现不影响系统中的其他层次</p>
-<ul>
-<li>对于其他层次而言是透明的</li>
-</ul></li>
-</ul></li>
-<li><p>效率变低</p></li>
-</ul></li>
-<li><p>Internet 协议栈 -- 数据的封装与解封装过程</p>
-<ul>
-<li><p>应用层：网络应用</p>
-<ul>
-<li>为人类用户或者其他应用进程提供网络应用服务</li>
-<li>FTP，SMTP，HTTP，DNS</li>
-</ul></li>
-<li><p>传输层：主机之间的数据传输</p>
-<ul>
-<li>在网络层提供的端到端通信基础上，细分为进程到进程，将不可靠的通信变成可靠地通信</li>
-<li>TCP,UDP</li>
-</ul></li>
-<li><p>网络层：为数据报从源目的选择路由</p>
-<ul>
-<li>主机主机之间的通信，端到端通信，不可靠</li>
-<li>IP，路由协议</li>
-</ul></li>
-<li><p>链路层：相连网络节点之间的数据传输</p>
-<ul>
-<li>2 个相邻 2 点的通信，点到点通信，可靠或不可靠</li>
-<li>点对点协议 PPP，802.11(wifi),Ethernet</li>
-</ul></li>
-<li><p>物理层：在线路上传送 bit</p></li>
-</ul></li>
-<li><p>ISO/OSI 参考模型 -- 在上述协议栈的应用层和传输层多了两层</p>
-<ul>
-<li>表示层：允许应用解释传输的数据，e.g., 加密，压缩，机器相关的表示转换</li>
-<li>会话层：数据交换的同步，检查点，恢复。</li>
-<li>在协议栈中是应用层中去处理</li>
-</ul></li>
-</ul></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
       </tags>
   </entry>
 </search>
