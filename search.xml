@@ -1037,6 +1037,21 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>学习 windows（一）</title>
+    <url>/2020/11/23/%E5%AD%A6%E4%B9%A0windows%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<p>​ 这篇是记录了自己学习 windows 程序设计所碰到问题记录的 Blog</p>
+<span id="more"></span>
+<h2 id="句柄 handle 是什么"> 句柄（handle）是什么 </h2>
+<p>​ 通常需要用某种方式能让你访问一个资源，而这个资源通常存放在一个表结构中，但操作系统不会给你对应项的地址让你去访问其中一项，而是给你这个项在表中的下标，这样你只要知道这个下标就能指明要访问的项了，这个表（其实就是个数组）就像整齐排列的一些抽屉，你要用抽屉的时候必须得通过抽屉的把手来打开它，这个表呢就像这些抽屉一样，而这个句柄就被比喻为抽屉的把手（柄）</p>
+<h2 id="undefined-reference-to__imp_getstockobject 的处理">undefined reference to`__imp_GetStockObject' 的处理 </h2>
+<p>​ 编程环境是 windows+vs code。</p>
+<p>​ 在 tasks.json 中的 args 下加入“-lwinmm”. 同理当继续碰到 undefined reference to 这类问题可以在 tasks.json 文件中链接相对应库 </p>
+]]></content>
+      <tags>
+        <tag>windons</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>安装 mongodb 及 c、c++ 驱动安装</title>
     <url>/2021/07/04/%E5%AE%89%E8%A3%85mongodb%E5%8F%8Ac%E3%80%81c++%E9%A9%B1%E5%8A%A8%E5%AE%89%E8%A3%85/</url>
     <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
@@ -1060,21 +1075,6 @@ return 0;</code></pre>
 ]]></content>
       <tags>
         <tag>mongodb</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>学习 windows（一）</title>
-    <url>/2020/11/23/%E5%AD%A6%E4%B9%A0windows%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[<p>​ 这篇是记录了自己学习 windows 程序设计所碰到问题记录的 Blog</p>
-<span id="more"></span>
-<h2 id="句柄 handle 是什么"> 句柄（handle）是什么 </h2>
-<p>​ 通常需要用某种方式能让你访问一个资源，而这个资源通常存放在一个表结构中，但操作系统不会给你对应项的地址让你去访问其中一项，而是给你这个项在表中的下标，这样你只要知道这个下标就能指明要访问的项了，这个表（其实就是个数组）就像整齐排列的一些抽屉，你要用抽屉的时候必须得通过抽屉的把手来打开它，这个表呢就像这些抽屉一样，而这个句柄就被比喻为抽屉的把手（柄）</p>
-<h2 id="undefined-reference-to__imp_getstockobject 的处理">undefined reference to`__imp_GetStockObject' 的处理 </h2>
-<p>​ 编程环境是 windows+vs code。</p>
-<p>​ 在 tasks.json 中的 args 下加入“-lwinmm”. 同理当继续碰到 undefined reference to 这类问题可以在 tasks.json 文件中链接相对应库 </p>
-]]></content>
-      <tags>
-        <tag>windons</tag>
       </tags>
   </entry>
   <entry>
