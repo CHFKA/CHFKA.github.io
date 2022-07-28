@@ -1885,7 +1885,7 @@ return 0;</code></pre>
 <ul>
 <li><p>35 用户时，&gt;=10 个用户活动的概率为 0.0004</p>
 <figure>
-<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/n 重伯努利模型.png" alt="计算公式"><figcaption aria-hidden="true">计算公式</figcaption>
+<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/n%20 重伯努利模型.png" alt="计算公式"><figcaption aria-hidden="true">计算公式</figcaption>
 </figure></li>
 <li><p>当大于等于 10 时，路由器没有裕量。所以为 9，这样当暂时发生分组排队时，在后来也能及时将数据发出</p></li>
 </ul></li>
