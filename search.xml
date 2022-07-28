@@ -1578,7 +1578,7 @@ return 0;</code></pre>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> a[N],s[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n,&amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;a[i]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) s[i] = s[i - <span class="number">1</span>] + a[i];</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l,r;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;l,&amp;r);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,s[r]-s[l<span class="number">-1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="二维前缀和">二维前缀和</h3>
 <figure>
-<img src="/2021/07/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(5)--%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86/ 前缀和与差分.png" alt="前缀和与差分"><figcaption aria-hidden="true">前缀和与差分</figcaption>
+<img src="/2021/07/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(5)--%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86/Prefix_sum_and_difference.png" alt="前缀和与差分"><figcaption aria-hidden="true">前缀和与差分</figcaption>
 </figure>
 <p>计算二维前缀和：<span class="math inline">\(\mathbf{S}_{[i,j]} =\mathbf{a}_{[1,1]}+\mathbf{a}_{[1,2]} +\mathbf{a}_{[1,j]}+\mathbf{a}_{[2,1]}+\mathbf{a}_{[2,2]}+....+\mathbf{a}_{[i,j]}\)</span></p>
 <p>即：<span class="math inline">\(\mathbf{S}_{[\mathbf{i},\mathbf{j}]} = \mathbf{S}_{[\mathbf{i}-1，\mathbf{j}]}+\mathbf{S}_{[\mathbf{i}-1，\mathbf{j}]}-\mathbf{S}_{[\mathbf{i}-1，\mathbf{j}-1]}+\mathbf{a}_{[\mathbf{i}，\mathbf{j}]}\)</span></p>
@@ -1885,7 +1885,7 @@ return 0;</code></pre>
 <ul>
 <li><p>35 用户时，&gt;=10 个用户活动的概率为 0.0004</p>
 <figure>
-<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/1.png" alt="计算公式"><figcaption aria-hidden="true">计算公式</figcaption>
+<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/N-fold_Bernoulli_model.png" alt="计算公式"><figcaption aria-hidden="true">计算公式</figcaption>
 </figure></li>
 <li><p>当大于等于 10 时，路由器没有裕量。所以为 9，这样当暂时发生分组排队时，在后来也能及时将数据发出</p></li>
 </ul></li>
@@ -2682,7 +2682,7 @@ return 0;</code></pre>
 </ul></li>
 <li>多媒体扩展： MIME</li>
 </ul></li>
-<li>邮件访问协议 <img src="/2022/01/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(2)-%E5%BA%94%E7%94%A8%E5%B1%82/1.png" title="邮件访问协议" alt="邮件访问协议"></li>
+<li>邮件访问协议 <img src="/2022/01/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(2)-%E5%BA%94%E7%94%A8%E5%B1%82/Email_Access_Process.png" title="邮件访问流程" alt="邮件访问流程"></li>
 </ul>
 <h3 id="pop3">POP3</h3>
 <ul>
@@ -2755,7 +2755,7 @@ return 0;</code></pre>
 <p><img src="/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/SDL 下载.png" style="zoom:75%;"></p>
 <p>​ 根据自己的编译器选择。</p>
 <p>​ 下载完成后根据自己使用的是 64 位还是 32 位 MinGW 选择文件夹复制粘贴到 MinGW 文件夹中里面。我是 64 位 MinGW。所以在这里我选择 x86 的文件夹并复制粘贴。</p>
-<p><img src="/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/ 选择 SDL 库文件夹.jpg" alt="选择 SDL 库文件夹" style="zoom:50%;"></p>
+<p><img src="/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/Select_the_SDL_library_folder.jpg" alt="选择 SDL 库文件夹" style="zoom:50%;"></p>
 <p><img src="/2021/01/07/%E9%85%8D%E7%BD%AESDL%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/MinGW 文件夹选择.png" alt="MinGW 文件夹选择" style="zoom:50%;"></p>
 <h2 id="配置 vscode"> 配置 VScode</h2>
 <p>​ 要在 c_cpp_properties.json 中输入路径。</p>
