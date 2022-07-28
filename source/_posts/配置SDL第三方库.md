@@ -22,7 +22,7 @@ tags: C++
 
 ## 下载SDL
 
- <img src="SDL下载.png" style="zoom:75%;" />
+ <img src="配置SDL第三方库/SDL下载.png" style="zoom:75%;" />
 
 ​		根据自己的编译器选择。
 
@@ -30,9 +30,9 @@ tags: C++
 
 
 
-<img src="选择SDL库文件夹.jpg" alt="选择SDL库文件夹" style="zoom:50%;" />
+<img src="配置SDL第三方库/Select_the_SDL_library_folder.jpg" alt="选择SDL库文件夹" style="zoom:50%;" />
 
-<img src="MinGW文件夹选择.png" alt="MinGW文件夹选择" style="zoom:50%;" />
+<img src="配置SDL第三方库/MinGW文件夹选择.png" alt="MinGW文件夹选择" style="zoom:50%;" />
 
 ## 配置VScode
 
