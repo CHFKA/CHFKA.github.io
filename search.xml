@@ -2148,7 +2148,7 @@ return 0;</code></pre>
 </ul></li>
 <li><p>数据单元(DU)</p>
 <figure>
-<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/2.png" alt="数据单元"><figcaption aria-hidden="true">数据单元</figcaption>
+<img src="/2021/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(1)-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%92%8CInternet/date_unit.png" alt="数据单元"><figcaption aria-hidden="true">数据单元</figcaption>
 </figure>
 <ul>
 <li><p>各层次的协议数据单元(PDU):</p>
