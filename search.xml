@@ -163,6 +163,76 @@
       </tags>
   </entry>
   <entry>
+    <title>编写 makefile</title>
+    <url>/2021/06/05/Linux(0)-3%E3%80%81%E7%BC%96%E5%86%99makefile/</url>
+    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
+<p>​ 这是在 linux 环境下编写 makefile 的要点和自己编写的例子。</p>
+<span id="more"></span>
+<h1 id="编写 makefile"> 编写 makefile</h1>
+<h2 id="三要素"> 三要素 </h2>
+<ul>
+<li> 目标 </li>
+<li> 依赖 </li>
+<li> 规则命令 </li>
+</ul>
+<h2 id="写法"> 写法 </h2>
+<h3 id="第一版"> 第一版 </h3>
+<p> 目标：依赖 </p>
+<p>tab 键 规则命令 </p>
+<p>app(可执行文件) ： *.c</p>
+<p>​ gcc -o app -I include/ *.c</p>
+<ul>
+<li> 缺点：如果更改其中一个文件是，所有的源码都重新编译 </li>
+</ul>
+<h3 id="第二版"> 第二版 </h3>
+<ul>
+<li><p> 定义变量 ---ObjFiles=*.o</p></li>
+<li><p> 变量的使用 ---$(ObjFiles) $(变量名)</p></li>
+<li><p>makefile 的隐含规则：默认处理第一个目标 </p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">ObjFiles=*.o</span><br><span class="line">app(可执行文件) :<span class="variable">$(ObjFiles)</span></span><br><span class="line">​	gcc -o  app -I <span class="keyword">include</span>/  *.o</span><br><span class="line">*.o： *.c（代表例子）</span><br><span class="line">​	gcc -c  *.c -I <span class="keyword">include</span>/</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="第三版"> 第三版 </h3>
+<h4 id="函数"> 函数 </h4>
+<ul>
+<li>wildcard 可以进行文件匹配 </li>
+<li>patsubst 内容的替换 </li>
+</ul>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="comment">#get all .c files</span></span><br><span class="line">SrcFiles =<span class="variable">$(<span class="built_in">wildcard</span> *.c)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#all .c files --&gt; .o files</span></span><br><span class="line">ObjFiles=<span class="variable">$(<span class="built_in">patsubst</span> %.c,%.o,<span class="variable">$(SrcFiles)</span>)</span></span><br><span class="line"></span><br><span class="line">app(可执行文件) :<span class="variable">$(ObjFiles)</span></span><br><span class="line">​	gcc -o  app -I <span class="keyword">include</span>/  <span class="variable">$(ObjFiles)</span></span><br><span class="line"></span><br><span class="line">*.o： *.c  （代表例子）</span><br><span class="line">​	gcc -c  *.c -I <span class="keyword">include</span>/</span><br></pre></td></tr></table></figure>
+<h4 id="变量"> 变量 </h4>
+<ul>
+<li>$@ 代表目标 </li>
+<li>$^ 代表全部依赖 </li>
+<li>$&lt; 第一个依赖 </li>
+<li>$? 第一个变换的依赖 </li>
+<li>clean 清理命令
+<ul>
+<li><span class="citation" data-cites="不输出该条规则">@不输出该条规则 </span></li>
+<li>’-‘ 报错后继续执行 </li>
+</ul></li>
+</ul>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="comment">#get all .c files</span></span><br><span class="line">SrcFiles =<span class="variable">$(<span class="built_in">wildcard</span> *.c)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#all .c files --&gt; .o files</span></span><br><span class="line">ObjFiles=<span class="variable">$(<span class="built_in">patsubst</span> %.c,%.o,<span class="variable">$(SrcFiles)</span>)</span></span><br><span class="line"></span><br><span class="line">app(可执行文件) :<span class="variable">$(ObjFiles)</span></span><br><span class="line">​	gcc -o  app -I <span class="keyword">include</span>/  <span class="variable">$(ObjFiles)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模式匹配规则 </span></span><br><span class="line">%.o： %.c  （代表例子）</span><br><span class="line">​	gcc -c  <span class="variable">$&lt;</span>  -I <span class="keyword">include</span>/</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	@rm -f *.o</span><br><span class="line">	rm -f app</span><br></pre></td></tr></table></figure>
+<h3 id="第四版"> 第四版 </h3>
+<ul>
+<li>clean 存在歧义时 使用.PHONY</li>
+</ul>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="comment">#get all .c files</span></span><br><span class="line">SrcFiles =<span class="variable">$(<span class="built_in">wildcard</span> *.c)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#all .c files --&gt; .o files</span></span><br><span class="line">ObjFiles=<span class="variable">$(<span class="built_in">patsubst</span> %.c,%.o,<span class="variable">$(SrcFiles)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="section">all:app</span></span><br><span class="line"></span><br><span class="line">app(可执行文件) :<span class="variable">$(ObjFiles)</span></span><br><span class="line">​	gcc -o app -I <span class="keyword">include</span>/  <span class="variable">$(ObjFiles)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模式匹配规则 $&lt; 这样的变量只能在规则中 </span></span><br><span class="line">%.o： %.c  （代表例子）</span><br><span class="line">​	gcc -c  <span class="variable">$&lt;</span>  -I <span class="keyword">include</span>/</span><br><span class="line"></span><br><span class="line"><span class="meta"><span class="meta-keyword">.PHONY</span>:clean all</span></span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	@rm -f *.o</span><br><span class="line">	rm -f app</span><br></pre></td></tr></table></figure>
+<h3 id="补充"> 补充 </h3>
+<ul>
+<li><p> 使用其他名字的 makefile</p>
+<ul>
+<li><p>make -f （文件名）</p></li>
+<li><p> 例子 </p>
+<figure>
+<img src="/2021/06/05/Linux(0)-3%E3%80%81%E7%BC%96%E5%86%99makefile/makefile 例子.png" alt="makefile 例子"><figcaption aria-hidden="true">makefile 例子 </figcaption>
+</figure></li>
+</ul></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>makefile</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>进程控制</title>
     <url>/2021/06/05/Linux(0)-4%E3%80%81%E6%96%87%E4%BB%B6IO/</url>
     <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
@@ -261,76 +331,6 @@ return 0;</code></pre>
 ]]></content>
       <tags>
         <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>编写 makefile</title>
-    <url>/2021/06/05/Linux(0)-3%E3%80%81%E7%BC%96%E5%86%99makefile/</url>
-    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
-<p>​ 这是在 linux 环境下编写 makefile 的要点和自己编写的例子。</p>
-<span id="more"></span>
-<h1 id="编写 makefile"> 编写 makefile</h1>
-<h2 id="三要素"> 三要素 </h2>
-<ul>
-<li> 目标 </li>
-<li> 依赖 </li>
-<li> 规则命令 </li>
-</ul>
-<h2 id="写法"> 写法 </h2>
-<h3 id="第一版"> 第一版 </h3>
-<p> 目标：依赖 </p>
-<p>tab 键 规则命令 </p>
-<p>app(可执行文件) ： *.c</p>
-<p>​ gcc -o app -I include/ *.c</p>
-<ul>
-<li> 缺点：如果更改其中一个文件是，所有的源码都重新编译 </li>
-</ul>
-<h3 id="第二版"> 第二版 </h3>
-<ul>
-<li><p> 定义变量 ---ObjFiles=*.o</p></li>
-<li><p> 变量的使用 ---$(ObjFiles) $(变量名)</p></li>
-<li><p>makefile 的隐含规则：默认处理第一个目标 </p>
-<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">ObjFiles=*.o</span><br><span class="line">app(可执行文件) :<span class="variable">$(ObjFiles)</span></span><br><span class="line">​	gcc -o  app -I <span class="keyword">include</span>/  *.o</span><br><span class="line">*.o： *.c（代表例子）</span><br><span class="line">​	gcc -c  *.c -I <span class="keyword">include</span>/</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="第三版"> 第三版 </h3>
-<h4 id="函数"> 函数 </h4>
-<ul>
-<li>wildcard 可以进行文件匹配 </li>
-<li>patsubst 内容的替换 </li>
-</ul>
-<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="comment">#get all .c files</span></span><br><span class="line">SrcFiles =<span class="variable">$(<span class="built_in">wildcard</span> *.c)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#all .c files --&gt; .o files</span></span><br><span class="line">ObjFiles=<span class="variable">$(<span class="built_in">patsubst</span> %.c,%.o,<span class="variable">$(SrcFiles)</span>)</span></span><br><span class="line"></span><br><span class="line">app(可执行文件) :<span class="variable">$(ObjFiles)</span></span><br><span class="line">​	gcc -o  app -I <span class="keyword">include</span>/  <span class="variable">$(ObjFiles)</span></span><br><span class="line"></span><br><span class="line">*.o： *.c  （代表例子）</span><br><span class="line">​	gcc -c  *.c -I <span class="keyword">include</span>/</span><br></pre></td></tr></table></figure>
-<h4 id="变量"> 变量 </h4>
-<ul>
-<li>$@ 代表目标 </li>
-<li>$^ 代表全部依赖 </li>
-<li>$&lt; 第一个依赖 </li>
-<li>$? 第一个变换的依赖 </li>
-<li>clean 清理命令
-<ul>
-<li><span class="citation" data-cites="不输出该条规则">@不输出该条规则 </span></li>
-<li>’-‘ 报错后继续执行 </li>
-</ul></li>
-</ul>
-<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="comment">#get all .c files</span></span><br><span class="line">SrcFiles =<span class="variable">$(<span class="built_in">wildcard</span> *.c)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#all .c files --&gt; .o files</span></span><br><span class="line">ObjFiles=<span class="variable">$(<span class="built_in">patsubst</span> %.c,%.o,<span class="variable">$(SrcFiles)</span>)</span></span><br><span class="line"></span><br><span class="line">app(可执行文件) :<span class="variable">$(ObjFiles)</span></span><br><span class="line">​	gcc -o  app -I <span class="keyword">include</span>/  <span class="variable">$(ObjFiles)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模式匹配规则 </span></span><br><span class="line">%.o： %.c  （代表例子）</span><br><span class="line">​	gcc -c  <span class="variable">$&lt;</span>  -I <span class="keyword">include</span>/</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	@rm -f *.o</span><br><span class="line">	rm -f app</span><br></pre></td></tr></table></figure>
-<h3 id="第四版"> 第四版 </h3>
-<ul>
-<li>clean 存在歧义时 使用.PHONY</li>
-</ul>
-<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="comment">#get all .c files</span></span><br><span class="line">SrcFiles =<span class="variable">$(<span class="built_in">wildcard</span> *.c)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#all .c files --&gt; .o files</span></span><br><span class="line">ObjFiles=<span class="variable">$(<span class="built_in">patsubst</span> %.c,%.o,<span class="variable">$(SrcFiles)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="section">all:app</span></span><br><span class="line"></span><br><span class="line">app(可执行文件) :<span class="variable">$(ObjFiles)</span></span><br><span class="line">​	gcc -o app -I <span class="keyword">include</span>/  <span class="variable">$(ObjFiles)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模式匹配规则 $&lt; 这样的变量只能在规则中 </span></span><br><span class="line">%.o： %.c  （代表例子）</span><br><span class="line">​	gcc -c  <span class="variable">$&lt;</span>  -I <span class="keyword">include</span>/</span><br><span class="line"></span><br><span class="line"><span class="meta"><span class="meta-keyword">.PHONY</span>:clean all</span></span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	@rm -f *.o</span><br><span class="line">	rm -f app</span><br></pre></td></tr></table></figure>
-<h3 id="补充"> 补充 </h3>
-<ul>
-<li><p> 使用其他名字的 makefile</p>
-<ul>
-<li><p>make -f （文件名）</p></li>
-<li><p> 例子 </p>
-<figure>
-<img src="/2021/06/05/Linux(0)-3%E3%80%81%E7%BC%96%E5%86%99makefile/makefile 例子.png" alt="makefile 例子"><figcaption aria-hidden="true">makefile 例子 </figcaption>
-</figure></li>
-</ul></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>makefile</tag>
       </tags>
   </entry>
   <entry>
@@ -1347,49 +1347,6 @@ return 0;</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>合并集</title>
-    <url>/2021/09/20/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(14)--%E5%90%88%E5%B9%B6%E9%9B%86/</url>
-    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
-<p> 并查集：</p>
-<ol type="1">
-<li> 快速将两集合合并 </li>
-<li> 查询两个元素是否在一个集合中 </li>
-</ol>
-<span id="more"></span>
-<h1 id="并查集"> 并查集 </h1>
-<ul>
-<li> 每个集合用一棵树来表示。树根的编号就是整个集合的编号。每个节点存储它的父节点，p[x] 表示 x 的父节点。</li>
-<li> 树根：用 p[x] == x 来表示 </li>
-<li>x 的集合编号：用 while(p[x] != x) x= p[x];</li>
-<li> 合并集合：px 是 x 的集合编号，py 是 y 的集合编号。p[x] = y</li>
-</ul>
-<hr>
-<p> 一共有 n 个数，编号是 1∼n，最开始每个数各自在一个集合中。</p>
-<p> 现在要进行 m 个操作，操作共有两种：</p>
-<ol type="1">
-<li><code>M a b</code>，将编号为 a 和 b 的两个数所在的集合合并，如果两个数已经在同一个集合中，则忽略这个操作；</li>
-<li><code>Q a b</code>，询问编号为 a 和 b 的两个数是否在同一个集合中；</li>
-</ol>
-<hr>
-<p> 实现：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> p[N];</span><br><span class="line"><span class="comment">// 核心操作 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span><span class="comment">// 返回 x 的根节点 + 路径压缩  </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(p[x] != x) p[x] = <span class="built_in">find</span>(p[x]);</span><br><span class="line">    <span class="keyword">return</span> p[x];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) p[i] = i;</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;  </span><br><span class="line">      	<span class="keyword">char</span> op[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s%d%d&quot;</span>,op,&amp;a,&amp;b);</span><br><span class="line">        <span class="keyword">if</span>(op[<span class="number">0</span>] == <span class="string">&#x27;M&#x27;</span>) p[<span class="built_in">find</span>(a)] = <span class="built_in">find</span>(b);</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">find</span>(a) == <span class="built_in">find</span>(b)) <span class="built_in">puts</span>(<span class="string">&quot;Yes&quot;</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">&quot;NO&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="变式"> 变式 </h2>
-<p> 给定一个包含 n 个点（编号为 1∼n）的无向图，初始时图中没有边。</p>
-<p> 现在要进行 m 个操作，操作共有三种：</p>
-<ol type="1">
-<li><code>C a b</code>，在点 a 和点 b 之间连一条边，a 和 b 可能相等；</li>
-<li><code>Q1 a b</code>，询问点 a 和点 b 是否在同一个连通块中，a 和 b 可能相等；</li>
-<li><code>Q2 a</code>，询问点 a 所在连通块中点的数量 </li>
-</ol>
-<hr>
-<p> 实现：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> p[N],siz[N];</span><br><span class="line"><span class="comment">// 核心操作 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span><span class="comment">// 返回 x 的根节点 + 路径压缩  </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(p[x] != x) p[x] = <span class="built_in">find</span>(p[x]);</span><br><span class="line">    <span class="keyword">return</span> p[x];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) </span><br><span class="line">    &#123;</span><br><span class="line">        p[i] = i;</span><br><span class="line">        siz[i] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;  </span><br><span class="line">      	<span class="keyword">char</span> op[<span class="number">5</span>];</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,op);</span><br><span class="line">        <span class="keyword">if</span>(op[<span class="number">0</span>] == <span class="string">&#x27;C&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scnaf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;a,&amp;b);</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">find</span>(a) == <span class="built_in">find</span>(b)) <span class="keyword">continue</span>;</span><br><span class="line">            size[<span class="built_in">find</span>(b)] += siz[<span class="built_in">find</span>(a)];</span><br><span class="line">            p[<span class="built_in">find</span>(a)] = <span class="built_in">find</span>(b);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(op[<span class="number">1</span>] == <span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scnaf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;a,&amp;b);</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">find</span>(a) == <span class="built_in">find</span>(b)) <span class="built_in">puts</span>(<span class="string">&quot;Yes&quot;</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">&quot;NO&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;a);</span><br><span class="line">            <span class="built_in">prindf</span>(<span class="string">&quot;%d\n&quot;</span>,siz[<span class="built_in">find</span>(a)]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>哈希表</title>
     <url>/2021/09/24/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(16)--%E5%93%88%E5%B8%8C%E8%A1%A8/</url>
     <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
@@ -1557,6 +1514,49 @@ return 0;</code></pre>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">mul</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt; &amp;A, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   	vector&lt;<span class="keyword">int</span>&gt; C;</span><br><span class="line">    <span class="keyword">int</span> t = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.<span class="built_in">size</span>() || t; i++)</span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="keyword">if</span>(i &lt; A.<span class="built_in">size</span>()) t += A[i] * b;</span><br><span class="line">        C.<span class="built_in">push_back</span>(t % <span class="number">10</span>);</span><br><span class="line">        t /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(C.<span class="built_in">size</span>() &gt; <span class="number">1</span> &amp;&amp; C.<span class="built_in">back</span>() == <span class="number">0</span>) C.<span class="built_in">pop_back</span>();</span><br><span class="line">    <span class="keyword">return</span> C;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	string a;</span><br><span class="line">    <span class="keyword">int</span> b;</span><br><span class="line">	vector&lt;<span class="keyword">int</span>&gt;A;</span><br><span class="line">	</span><br><span class="line">	cin &gt;&gt; a &gt;&gt; b;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = a.<span class="built_in">size</span>() - <span class="number">1</span>; i&gt;= <span class="number">0</span>; i--) A.<span class="built_in">push_back</span>(a[i] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">	</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">auto</span> C = <span class="built_in">mul</span>(A,b);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = C.<span class="built_in">size</span>() <span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,C[i]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="计算 - 除法">计算 - 除法</h2>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">div</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt; &amp;A, <span class="keyword">int</span> b, <span class="keyword">int</span> &amp;r)</span><span class="comment">//r 传入 r 的地址，便于直接对余数 r 进行修改</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   	vector&lt;<span class="keyword">int</span>&gt; C;</span><br><span class="line">    r = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = A.<span class="built_in">size</span>() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)<span class="comment">// 对 A 从最高位开始处理</span></span><br><span class="line">    &#123;  </span><br><span class="line">        r = r * <span class="number">10</span> + A[i];<span class="comment">// 将上次的余数 *10 在加上当前位的数字，便是该位需要除的被除数</span></span><br><span class="line">        C.<span class="built_in">push_back</span>(r / b);<span class="comment">// 所得即为商在这一位的数字</span></span><br><span class="line">        r %= b;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 由于在除法运算中，高位到低位运算，因此 C 的前导零都在 vector 的前面而不是尾部，vector 只有删除最后一个数字 pop_back 是常数复杂度，而对于删除第一位没有相应的库函数可以使用，而且删除第一位，其余位也要前移，</span></span><br><span class="line">    <span class="comment">// 因此我们将 C 翻转，这样 0 就位于数组尾部，可以使用 pop 函数删除前导 0</span></span><br><span class="line">    <span class="built_in">reverse</span>(C.<span class="built_in">begin</span>(), C.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">while</span>(C.<span class="built_in">size</span>() &gt; <span class="number">1</span> &amp;&amp; C.<span class="built_in">back</span>() == <span class="number">0</span>) C.<span class="built_in">pop_back</span>();</span><br><span class="line">    <span class="keyword">return</span> C;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	string a;</span><br><span class="line">    <span class="keyword">int</span> b;</span><br><span class="line">	vector&lt;<span class="keyword">int</span>&gt;A;</span><br><span class="line">	</span><br><span class="line">	cin &gt;&gt; a &gt;&gt; b;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = a.<span class="built_in">size</span>() - <span class="number">1</span>; i&gt;= <span class="number">0</span>; i--) A.<span class="built_in">push_back</span>(a[i] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">int</span> r;</span><br><span class="line">    <span class="keyword">auto</span> C = <span class="built_in">div</span>(A,b,r);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = C.<span class="built_in">size</span>() <span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,C[i]);</span><br><span class="line">    cout &lt;&lt; endl &lt;&lt;r &lt;&lt; endl; </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>合并集</title>
+    <url>/2021/09/20/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(14)--%E5%90%88%E5%B9%B6%E9%9B%86/</url>
+    <content><![CDATA[<h1 id="介绍"> 介绍 </h1>
+<p> 并查集：</p>
+<ol type="1">
+<li> 快速将两集合合并 </li>
+<li> 查询两个元素是否在一个集合中 </li>
+</ol>
+<span id="more"></span>
+<h1 id="并查集"> 并查集 </h1>
+<ul>
+<li> 每个集合用一棵树来表示。树根的编号就是整个集合的编号。每个节点存储它的父节点，p[x] 表示 x 的父节点。</li>
+<li> 树根：用 p[x] == x 来表示 </li>
+<li>x 的集合编号：用 while(p[x] != x) x= p[x];</li>
+<li> 合并集合：px 是 x 的集合编号，py 是 y 的集合编号。p[x] = y</li>
+</ul>
+<hr>
+<p> 一共有 n 个数，编号是 1∼n，最开始每个数各自在一个集合中。</p>
+<p> 现在要进行 m 个操作，操作共有两种：</p>
+<ol type="1">
+<li><code>M a b</code>，将编号为 a 和 b 的两个数所在的集合合并，如果两个数已经在同一个集合中，则忽略这个操作；</li>
+<li><code>Q a b</code>，询问编号为 a 和 b 的两个数是否在同一个集合中；</li>
+</ol>
+<hr>
+<p> 实现：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> p[N];</span><br><span class="line"><span class="comment">// 核心操作 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span><span class="comment">// 返回 x 的根节点 + 路径压缩  </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(p[x] != x) p[x] = <span class="built_in">find</span>(p[x]);</span><br><span class="line">    <span class="keyword">return</span> p[x];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) p[i] = i;</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;  </span><br><span class="line">      	<span class="keyword">char</span> op[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s%d%d&quot;</span>,op,&amp;a,&amp;b);</span><br><span class="line">        <span class="keyword">if</span>(op[<span class="number">0</span>] == <span class="string">&#x27;M&#x27;</span>) p[<span class="built_in">find</span>(a)] = <span class="built_in">find</span>(b);</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">find</span>(a) == <span class="built_in">find</span>(b)) <span class="built_in">puts</span>(<span class="string">&quot;Yes&quot;</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">&quot;NO&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="变式"> 变式 </h2>
+<p> 给定一个包含 n 个点（编号为 1∼n）的无向图，初始时图中没有边。</p>
+<p> 现在要进行 m 个操作，操作共有三种：</p>
+<ol type="1">
+<li><code>C a b</code>，在点 a 和点 b 之间连一条边，a 和 b 可能相等；</li>
+<li><code>Q1 a b</code>，询问点 a 和点 b 是否在同一个连通块中，a 和 b 可能相等；</li>
+<li><code>Q2 a</code>，询问点 a 所在连通块中点的数量 </li>
+</ol>
+<hr>
+<p> 实现：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> p[N],siz[N];</span><br><span class="line"><span class="comment">// 核心操作 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span><span class="comment">// 返回 x 的根节点 + 路径压缩  </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(p[x] != x) p[x] = <span class="built_in">find</span>(p[x]);</span><br><span class="line">    <span class="keyword">return</span> p[x];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) </span><br><span class="line">    &#123;</span><br><span class="line">        p[i] = i;</span><br><span class="line">        siz[i] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(m--)</span><br><span class="line">    &#123;  </span><br><span class="line">      	<span class="keyword">char</span> op[<span class="number">5</span>];</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,op);</span><br><span class="line">        <span class="keyword">if</span>(op[<span class="number">0</span>] == <span class="string">&#x27;C&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scnaf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;a,&amp;b);</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">find</span>(a) == <span class="built_in">find</span>(b)) <span class="keyword">continue</span>;</span><br><span class="line">            size[<span class="built_in">find</span>(b)] += siz[<span class="built_in">find</span>(a)];</span><br><span class="line">            p[<span class="built_in">find</span>(a)] = <span class="built_in">find</span>(b);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(op[<span class="number">1</span>] == <span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scnaf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;a,&amp;b);</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">find</span>(a) == <span class="built_in">find</span>(b)) <span class="built_in">puts</span>(<span class="string">&quot;Yes&quot;</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">&quot;NO&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;a);</span><br><span class="line">            <span class="built_in">prindf</span>(<span class="string">&quot;%d\n&quot;</span>,siz[<span class="built_in">find</span>(a)]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法</tag>
