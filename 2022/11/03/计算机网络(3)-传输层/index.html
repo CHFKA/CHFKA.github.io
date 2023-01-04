@@ -27,11 +27,14 @@
 <meta property="og:site_name" content="CHFKA">
 <meta property="og:description" content="概述  理解传输层的工作原理  多路复用&#x2F;解复用 可靠数据传输 流量控制 拥塞控制  学习Internet的传输层协议  UDP：无连接传输 TCP：面向连接的可靠传输 TCP的拥塞控制">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://chfka.github.io/2022/11/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(3)-%E4%BC%A0%E8%BE%93%E5%B1%82/GBN_example.png">
+<meta property="og:image" content="https://chfka.github.io/2022/11/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(3)-%E4%BC%A0%E8%BE%93%E5%B1%82/SR_example.png">
 <meta property="article:published_time" content="2022-11-03T14:00:59.000Z">
-<meta property="article:modified_time" content="2022-12-03T13:30:14.858Z">
+<meta property="article:modified_time" content="2023-01-04T15:24:12.724Z">
 <meta property="article:author" content="CHFKA">
 <meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chfka.github.io/2022/11/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(3)-%E4%BC%A0%E8%BE%93%E5%B1%82/GBN_example.png">
 
 
 <link rel="canonical" href="https://chfka.github.io/2022/11/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(3)-%E4%BC%A0%E8%BE%93%E5%B1%82/">
@@ -109,7 +112,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">传输层服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B8%8E%E8%A7%A3%E5%A4%8D%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">多路复用与解复用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">4.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">可靠数据传输的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp"><span class="nav-number">6.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%B5%E7%BB%93%E6%9E%84"><span class="nav-number">6.1.</span> <span class="nav-text">段结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="nav-number">6.2.</span> <span class="nav-text">可靠数据传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">6.3.</span> <span class="nav-text">流量控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">拥塞控制原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%20%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">TCP 拥塞控制</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">传输层服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B8%8E%E8%A7%A3%E5%A4%8D%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">多路复用与解复用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">4.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%20rdt%20%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">可靠数据传输 (RDT) 的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E6%9C%89%E6%AF%94%E7%89%B9%E5%B7%AE%E9%94%99%E7%9A%84%E4%BF%A1%E9%81%93"><span class="nav-number">5.1.</span> <span class="nav-text">具有比特差错的信道</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt2.0"><span class="nav-number">5.1.1.</span> <span class="nav-text">RDT2.0</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt2.1---%20%E5%BA%8F%E5%8F%B7"><span class="nav-number">5.1.2.</span> <span class="nav-text">RDT2.1--- 序号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt2.2---%20%E6%97%A0%20nak%20%E7%A1%AE%E8%AE%A4"><span class="nav-number">5.1.3.</span> <span class="nav-text">RDT2.2--- 无 NAK 确认</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E6%9C%89%E6%AF%94%E7%89%B9%E5%B7%AE%E9%94%99%E5%92%8C%E5%88%86%E7%BB%84%E4%B8%A2%E5%A4%B1%E7%9A%84%E4%BF%A1%E9%81%93"><span class="nav-number">5.2.</span> <span class="nav-text">具有比特差错和分组丢失的信道</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt3.0"><span class="nav-number">5.2.1.</span> <span class="nav-text">RDT3.0</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt3.1"><span class="nav-number">5.2.2.</span> <span class="nav-text">RDT3.1</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#go-back-n"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">GO-back-N</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#selective-repeat"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">Selective Repeat</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%20gbn%20%E5%92%8C%20sr"><span class="nav-number">5.2.2.3.</span> <span class="nav-text">对比 GBN 和 SR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%20slide-window%20%E5%8D%8F%E8%AE%AE"><span class="nav-number">5.2.2.4.</span> <span class="nav-text">滑动窗口 (slide window) 协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E7%9A%84%E6%9C%80%E5%A4%A7%E5%B0%BA%E5%AF%B8"><span class="nav-number">5.2.2.5.</span> <span class="nav-text">窗口的最大尺寸</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp"><span class="nav-number">6.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%B5%E7%BB%93%E6%9E%84"><span class="nav-number">6.1.</span> <span class="nav-text">段结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="nav-number">6.2.</span> <span class="nav-text">可靠数据传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">6.3.</span> <span class="nav-text">流量控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86"><span class="nav-number">6.4.</span> <span class="nav-text">连接管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">拥塞控制原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%20%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">TCP 拥塞控制</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -198,7 +201,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-12-03 21:30:14" itemprop="dateModified" datetime="2022-12-03T21:30:14+08:00">2022-12-03</time>
+      <time title="修改时间：2023-01-04 23:24:12" itemprop="dateModified" datetime="2023-01-04T23:24:12+08:00">2023-01-04</time>
     </span>
 
   
@@ -312,23 +315,31 @@
 <li>应用特定的差错恢复</li>
 </ul></li>
 <li><p>用户数据报协议</p>
-
-  <div style="text-align: center;">
-  <table border="1">
-  <tr>
-     <td>源端口号</td>
-     <td>目的端口号</td>
-  </tr>
-  <tr>
-     <td>长度</td>
-     <td>校验和</td>
-  </tr>
-  <tr>
-     <td colspan="2">应用程序数据(报文)</td>
-  </tr>
-  </table>
-  </div>
-  </li>
+<div style="text-align: center;">
+<table border="1">
+<tr>
+<td>
+源端口号
+</td>
+<td>
+目的端口号
+</td>
+</tr>
+<tr>
+<td>
+长度
+</td>
+<td>
+校验和
+</td>
+</tr>
+<tr>
+<td colspan="2">
+应用程序数据(报文)
+</td>
+</tr>
+</table>
+</div></li>
 <li><p>UDP 的必要性</p>
 <ul>
 <li>不建立连接</li>
@@ -362,11 +373,338 @@
 <li>求和时，必须将进位回卷到结果上</li>
 </ul></li>
 </ul>
-<h2 id="可靠数据传输的原理">可靠数据传输的原理</h2>
+<h2 id="可靠数据传输 rdt 的原理">可靠数据传输 (RDT) 的原理</h2>
+<p>信道的不可靠特点决定了可靠数据传输协议 (rdt) 的复杂性</p>
+<p>双向的数据传输问题实际上是 2 个单向数据传输问题的综合</p>
+<h3 id="具有比特差错的信道">具有比特差错的信道</h3>
+<p>具有比特差错的信道 下层信道可能会出错：将分组中的比特翻转。需要用校验和来检测比特差错</p>
+<h4 id="rdt2.0">RDT2.0</h4>
+<ul>
+<li>确认(ACK): 接收方显式地告诉发送方分组已被正确接收</li>
+<li>否定确认(NAK)：接收方显示地告诉发送方分组发生了差错
+<ul>
+<li>发送方收到 NAK 后，发送方重传分组</li>
+</ul></li>
+<li>采用差错控制编码进行差错检测
+<ul>
+<li>发送方差错控制编码、缓存</li>
+<li>接收方使用编码检错</li>
+<li>接收方的反馈：控制报文(ACK, NAK): 接收方 -&gt; 发送方</li>
+<li>发送方收到反馈相应的动作</li>
+</ul></li>
+<li>接收方不知道他最后发送的 ACK/NAK 是否被正确地收到
+<ul>
+<li>发送方不对收到的 ack/nak 给确认，<strong>没有所谓的确认的确认</strong></li>
+<li>接收方发送 ack，如果后面接收方收到的是：
+<ul>
+<li>重复分组。则 ack 错误</li>
+<li>下一个分组，ack 正确</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="rdt2.1--- 序号">RDT2.1--- 序号</h4>
+<ul>
+<li>处理重复
+<ul>
+<li>发送方在每个分组中加入序号</li>
+<li>如果 ACK/NAK 出错，发送方重传当前分组</li>
+<li>接收方丢弃重复分组</li>
+</ul></li>
+<li>停等协议 接收方发送一个分组，然后等待接收方的应答</li>
+</ul>
+<h4 id="rdt2.2--- 无 nak 确认">RDT2.2--- 无 NAK 确认</h4>
+<ul>
+<li>只使用 ACK(ack 要编号)</li>
+<li>接收方对最后正确接收的分组发 ACK，以替代 NAK
+<ul>
+<li>接收方必须显式地包含正确接收分组的序号</li>
+</ul></li>
+<li>当重复收到 ACK 时，发送方与收到 NAK 采取相同的动作：重传当前分组</li>
+<li>为后面的一次发送多个数据单位做准备
+<ul>
+<li>一次能够发送多个</li>
+<li>使用对前一个数据单位的 ACK，代替本数据单位的 NAK</li>
+<li>确认信息减少一半，协议处理简单</li>
+</ul></li>
+</ul>
+<h3 id="具有比特差错和分组丢失的信道">具有比特差错和分组丢失的信道</h3>
+<p>下层信道可能会丢失分组(数据或 ACK)；会死锁</p>
+<h4 id="rdt3.0">RDT3.0</h4>
+<p>发送方等待 ACK 一段合理的时间</p>
+<ul>
+<li>发送端超时重传：如果到时没有收到 ACK-&gt; 重传</li>
+<li>当分组 (或 ACK) 只是被延迟了，接收方必须指明被正确接收的序号</li>
+<li>需要一个倒计数定时器</li>
+<li>在信道容量比较大的时候，利用率比较低(缺点) <span class="math display">\[U_{sender} = \frac{L/R}{RTT+L/R}
+\]</span></li>
+</ul>
+<h4 id="rdt3.1">RDT3.1</h4>
+<ul>
+<li><p>流水线协议：允许发送方在未得到接收方确认的情况下一次发送多个分组 <span class="math display">\[U_{sender} = \frac{N*L/R}{RTT+L/R}
+\]</span></p>
+<ul>
+<li>必须增加序号的范围：用多个 bit 表示分组的序号</li>
+<li>在发送方 / 接收方要有缓冲区
+<ul>
+<li>发送方缓冲：未得到确认，可能需要重传</li>
+<li>接收方缓存：上层用户取用数据的速率 <span class="math inline">\(\ne\)</span> 接收到的数据速率；接收到的数据可能乱序，排序交付(可靠)</li>
+</ul></li>
+<li>两种通用的流水线协议：回退 N 步 (GBN) 和选择重传(SR)</li>
+</ul></li>
+</ul>
+<h5 id="go-back-n">GO-back-N</h5>
+<ul>
+<li>发送端最多在流水性中有 N 个未确认的分组</li>
+<li>接收端只是发送累计型确认：接收端如果分线 gap，不确认新到来的分组</li>
+<li>发送端拥有对最老的未确认分组的定时器
+<ul>
+<li>只需设置一个定时器</li>
+<li>当定时器到时，重传所有未确认分组</li>
+</ul></li>
+<li>只发送 ACK：对顺序接收的最高序号的分组
+<ul>
+<li>可能会产生重复的 ACK</li>
+<li>接收窗口 =1</li>
+</ul></li>
+<li>对于乱序的分组
+<ul>
+<li>丢弃 -&gt; 在接收方不被缓存</li>
+<li>对顺序接收的最高序号的分组进行确认 - 累计确认</li>
+</ul></li>
+<li>例子 <img src="/2022/11/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(3)-%E4%BC%A0%E8%BE%93%E5%B1%82/GBN_example.png" title="GO-back-N 过程" alt="GO-back-N"></li>
+</ul>
+<h5 id="selective-repeat">Selective Repeat</h5>
+<ul>
+<li>发送端最多在流水线中有 N 个未确认的分组</li>
+<li>接收方对每个到来的分组单独确认</li>
+<li>发送方为每个未确认的分组保持一个定时器：当超时定时器到时，只是重发到时的未确认分组</li>
+<li>接收方对每个正确接收的分组，分别发送<span class="math inline">\(ACK_{n}\)</span>(非累计确认)
+<ul>
+<li>接收窗口 &gt;1: 可以缓存乱序的分组</li>
+<li>最终将分组按顺序交付给上层</li>
+</ul></li>
+<li>发送方只对那些每有收到 ACK 的分组进行重传 - 选择性重传
+<ul>
+<li>发送方为每个未确认的分组设定一个定时器</li>
+</ul></li>
+<li>发送窗口的最大值限制未确认分组的个数</li>
+<li>例子 <img src="/2022/11/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C(3)-%E4%BC%A0%E8%BE%93%E5%B1%82/SR_example.png" title="SR 过程" alt="SR"></li>
+</ul>
+<h5 id="对比 gbn 和 sr">对比 GBN 和 SR</h5>
+<table>
+<thead>
+<tr class="header">
+<th>名称</th>
+<th>GBN</th>
+<th>SR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>优点</td>
+<td>简单，所需资源少</td>
+<td>出错时重传一个代价小</td>
+</tr>
+<tr class="even">
+<td>缺点</td>
+<td>一旦出错，回退 N 步代价大</td>
+<td>复杂，所需资源多</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>适用范围
+<ul>
+<li>出错率低：比较适合 GBN。</li>
+<li>链路容量大，比较时候 SR。</li>
+</ul></li>
+</ul>
+<h5 id="滑动窗口 slide-window 协议">滑动窗口 (slide window) 协议</h5>
+<ul>
+<li><p>发送缓冲区：</p>
+<ul>
+<li>形式：内存中的一个区域，落入缓冲区的分组可以发送</li>
+<li>功能：用于存放已发送，但是没有得到确认的分组</li>
+<li>必要性：需要重发时可用</li>
+</ul></li>
+<li><p>发送缓冲区的大小：一次最多可以发送多少个未经确认的分组</p>
+<ul>
+<li>停止等待协议 =1</li>
+<li>流水线协议 &gt;1, 不能很大，链路利用率不能超过 100%</li>
+</ul></li>
+<li><p>发送缓冲区的分组：</p>
+<ul>
+<li>未发送的：落入发送缓冲区的分组，可以连续发送出去；</li>
+<li>已经发送出去的、等待对方确认的分组：发送缓冲区的分组只有得到确认才能删除</li>
+</ul></li>
+<li><p>发送窗口：发送缓冲区内容的一个范围</p>
+<ul>
+<li>已发送但未经确认分组的序号构成的空间</li>
+<li>发送窗口的移动：
+<ul>
+<li>后沿移动：收到老分组的确认，可以向前移动，但不能超过前沿</li>
+</ul></li>
+</ul></li>
+<li><p>接收窗口： 接收窗口 = 接收缓冲区</p>
+<ul>
+<li>接收窗口用于控制哪些分组可以接收：
+<ul>
+<li>只有收到的分组序号落入接收窗口内才允许接收</li>
+<li>若序号在接收窗口之外，丢弃</li>
+</ul></li>
+<li>接收窗口尺寸 Wr=1，顺序接收</li>
+<li>接收窗口尺寸 Wr&gt;1，可以乱序接收
+<ul>
+<li>但提交给上层的分组，要按序</li>
+</ul></li>
+<li>接收窗口的滑动和发送确认
+<ul>
+<li>滑动：
+<ul>
+<li>低序号分组到来，接收窗口移动</li>
+<li>高序号分组乱序到来，缓存到不交付，不滑动</li>
+</ul></li>
+<li>发送确认
+<ul>
+<li>接收窗口尺寸 =1，发送连续收到的最大的分组确认(累计确认)</li>
+<li>接收窗口尺寸 &gt;1, 收到分组，发送那个分组的确认(非累计确认)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p>发送接收窗口互动</p>
+<ul>
+<li>发送窗口
+<ul>
+<li>有新的分组落入发送缓冲区，发送 -&gt; 前沿移动</li>
+<li>来了老的低序号分组的确认 -&gt; 后沿向前滑动 -&gt; 新的分组可以落入发送缓冲区的范围</li>
+</ul></li>
+<li>接收窗口
+<ul>
+<li>收到分组，落入到接收窗口，接收</li>
+<li>是低序号，发送确认给对方</li>
+</ul></li>
+<li>发送端上面来了分组 -&gt; 发送窗口滑动 -&gt; 接收窗口滑动 -&gt; 发确认</li>
+</ul></li>
+</ul>
+<h5 id="窗口的最大尺寸">窗口的最大尺寸</h5>
+<ul>
+<li>GBN：<span class="math inline">\(2^{n}-1\)</span></li>
+<li>SR: <span class="math inline">\(2^{n-1}\)</span></li>
+</ul>
 <h2 id="tcp">TCP</h2>
+<ul>
+<li>概述
+<ul>
+<li>点对点：一个发送，一个接收</li>
+<li>可靠的、按顺序的：没有报文边界</li>
+<li>管道化：TCP 拥塞控制和流量控制设置窗口大小</li>
+<li>发送和接收缓存：</li>
+<li>全双工：
+<ul>
+<li>在同一个连接中数据流双向流动</li>
+<li>MSS：最大报文端大小</li>
+</ul></li>
+<li>面向连接：在数据交换之前，通过握手 (交换控制报文) 初始化发送方、接收方的状态变量</li>
+<li>有流量控制：发送方不会淹没接收方</li>
+</ul></li>
+</ul>
 <h3 id="段结构">段结构</h3>
+<div class="center">
+<table style="text-align: center;border:0; cellpadding:0 cellspacing:0">
+<tr>
+<td>
+源端口号
+</td>
+<td>
+目的端口号
+</td>
+</tr>
+<tr>
+<td colspan="2">
+序号
+</td>
+</tr>
+<tr>
+<td colspan="2">
+确认号
+</td>
+</tr>
+<tr>
+<td style="padding:0;">
+<table style="margin:0">
+<tr>
+<td width="32">
+首部长度
+</td>
+<td width="32">
+保留未用
+</td>
+<td width="5">
+U
+</td>
+<td width="5">
+A
+</td>
+<td width="5">
+P
+</td>
+<td width="5">
+R
+</td>
+<td width="5">
+S
+</td>
+<td width="5">
+F
+</td>
+</tr>
+</table>
+</td>
+<td>
+接收窗口
+</td>
+</tr>
+<tr>
+<td title="t">
+校验和
+</td>
+<td>
+紧急数据指针
+</td>
+</tr>
+<tr>
+<td colspan="2">
+可选项
+</td>
+</tr>
+<tr>
+<td colspan="2">
+应用层数据<br>(长度可变)
+</td>
+</tr>
+</table>
+</div>
+<ul>
+<li>报文段结构：
+<ul>
+<li>序号：报文段首字节在字节流的编号</li>
+<li>确认号：
+<ul>
+<li>期望从另一方收到的下一个字节的序号</li>
+<li>累积确认</li>
+</ul></li>
+<li>序号、确认号组合能够对字节计数</li>
+<li>U：URG 紧急数据(通常不用)</li>
+<li>A：ACK 合法确认</li>
+<li>P：PSH 马上推出数据(通常不用)</li>
+<li>R，S，F：RST，SYN，FIN 建立 / 拆除连接</li>
+<li>接收窗口：愿意接收的字节数量</li>
+<li>校验和：同 UDP</li>
+</ul></li>
+</ul>
 <h3 id="可靠数据传输">可靠数据传输</h3>
 <h3 id="流量控制">流量控制</h3>
+<h3 id="连接管理">连接管理</h3>
 <h2 id="拥塞控制原理">拥塞控制原理</h2>
 <h2 id="tcp 拥塞控制">TCP 拥塞控制</h2>
 
@@ -410,7 +748,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
